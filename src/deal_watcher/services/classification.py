@@ -41,10 +41,21 @@ CATEGORY_TERMS: tuple[tuple[str, tuple[str, ...]], ...] = (
 EXCLUSIONS = {
     "gpu": ("ekran kartı tutucu", "hazır sistem", "hazir sistem", "ekran kartı standı"),
     "cpu": ("işlemci soğutucu", "islemci sogutucu", "termal macun"),
-    "storage": ("ssd kutusu", "ssd kutusu", "nvme kutusu"),
+    "storage": ("ssd kutusu", "nvme kutusu"),
     "power_supply": ("psu kablosu", "güç kaynağı kablosu"),
     "phone_tablet_watch": ("watch kayışı", "watch kayisi", "saat kayışı"),
 }
+
+TURKISH_ASCII_TRANSLATION = str.maketrans(
+    {
+        "ç": "c",
+        "ğ": "g",
+        "ı": "i",
+        "ö": "o",
+        "ş": "s",
+        "ü": "u",
+    }
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -55,8 +66,17 @@ class Classification:
     secondary_categories: tuple[str, ...] = ()
 
 
+def _fold_text(value: str) -> str:
+    folded = value.casefold().replace("i\u0307", "i").translate(TURKISH_ASCII_TRANSLATION)
+    return re.sub(r"\s+", " ", folded)
+
+
 def normalize_text(value: str) -> str:
-    return re.sub(r"\s+", " ", value.casefold().replace("i\u0307", "i")).strip()
+    return _fold_text(value).strip()
+
+
+def _contains_any(haystack: str, terms: tuple[str, ...]) -> bool:
+    return any(_fold_text(term) in haystack for term in terms)
 
 
 def classify_topic(
@@ -72,16 +92,17 @@ def classify_topic(
         parts.extend(detail.product_names)
     haystack = normalize_text(" ".join(parts))
     found = [
-        candidate for candidate, terms in CATEGORY_TERMS if any(term in haystack for term in terms)
+        candidate for candidate, terms in CATEGORY_TERMS if _contains_any(haystack, terms)
     ]
     for candidate, terms in EXCLUSIONS.items():
-        if any(term in haystack for term in terms) and candidate in found:
+        if candidate in found and _contains_any(haystack, terms):
             found.remove(candidate)
+    target_haystack = normalize_text(" ".join(target_names))
     target_category = next(
         (
             candidate
             for candidate, terms in CATEGORY_TERMS
-            if any(term in normalize_text(" ".join(target_names)) for term in terms)
+            if _contains_any(target_haystack, terms)
         ),
         None,
     )
@@ -93,12 +114,11 @@ def classify_topic(
     secondary = tuple(item for item in found if item != category and item in config.categories)
     target_match = any(normalize_text(name) in haystack for name in target_names)
     urgent = target_match or any(
-        signal.replace("_", " ") in haystack for signal in config.urgent_signals
+        normalize_text(signal.replace("_", " ")) in haystack
+        for signal in config.urgent_signals
     )
     if detail is not None:
-        urgent = (
-            urgent or detail.back_in_stock or detail.personalized_coupon or detail.cart_discount
-        )
+        urgent = urgent or detail.back_in_stock or detail.personalized_coupon or detail.cart_discount
         urgent = urgent or detail.stock_status in {"son stok", "1 adet", "2 adet", "sınırlı stok"}
     relevant = [category, *secondary]
     if urgent or any(item in config.priorities.urgent_categories for item in relevant):
