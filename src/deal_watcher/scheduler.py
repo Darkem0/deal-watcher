@@ -8,16 +8,28 @@ from threading import Event, Lock
 
 from deal_watcher.runtime import InstanceLock, ShutdownController
 
+JitterRange = float | tuple[float, float]
+
 
 @dataclass(slots=True)
 class ScheduledJob:
     name: str
     interval_seconds: float
     callback: Callable[[], None]
-    jitter_seconds: float = 0.0
+    jitter_seconds: JitterRange = 0.0
     next_run: float = 0.0
     running: bool = False
     failures: int = 0
+
+
+def _jitter_delay(jitter: JitterRange) -> float:
+    if isinstance(jitter, tuple):
+        low, high = jitter
+    else:
+        low, high = 0.0, jitter
+    if low < 0 or high < low:
+        raise ValueError("jitter must be non-negative and ordered")
+    return random.uniform(low, high) if high else 0.0
 
 
 class Scheduler:
@@ -60,8 +72,7 @@ class Scheduler:
                     delay = min(job.interval_seconds * (2 ** min(job.failures, 4)), 3600)
                 finally:
                     job.running = False
-                jitter = random.uniform(0, job.jitter_seconds) if job.jitter_seconds else 0
-                job.next_run = self._clock() + delay + jitter
+                job.next_run = self._clock() + delay + _jitter_delay(job.jitter_seconds)
                 iterations += 1
 
 

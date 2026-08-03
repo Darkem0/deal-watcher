@@ -21,6 +21,15 @@ def test_akakce_is_disabled_and_experimental_by_default(app_config) -> None:
     assert app_config.settings.akakce.status == "experimental"
 
 
+def test_default_notification_channel_is_telegram(app_config) -> None:
+    assert app_config.settings.notifications.channels == ["telegram"]
+
+
+def test_forum_polling_defaults_match_runtime_policy(app_config) -> None:
+    assert app_config.forum.polling.first_page_minutes == 3
+    assert app_config.forum.polling.jitter_seconds == (0, 45)
+
+
 def test_null_target_prices_are_supported(app_config) -> None:
     assert all(product.target_price_try is None for product in app_config.products.products)
     assert app_config.products.defaults.target_price_try is None

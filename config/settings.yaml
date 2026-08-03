@@ -1,6 +1,6 @@
 version: 1
 application: {timezone: Europe/Istanbul, platform: windows}
-network: {timeout_seconds: 20, connect_timeout_seconds: 10, read_timeout_seconds: 20, write_timeout_seconds: 20, pool_timeout_seconds: 10, max_retries: 3, backoff_seconds: [2, 5, 15], min_request_interval_seconds: 3, max_response_bytes: 5000000, user_agent: "deal-watcher/0.2 (+offline-first monitor)", respect_rate_limits: true, playwright_fallback: controlled_only}
+network: {timeout_seconds: 20, connect_timeout_seconds: 10, read_timeout_seconds: 20, write_timeout_seconds: 20, pool_timeout_seconds: 10, max_retries: 3, backoff_seconds: [2, 5, 15], min_request_interval_seconds: 3, max_response_bytes: 5000000, user_agent: "deal-watcher/0.1 (+https://github.com/Darkem0/deal-watcher)", respect_rate_limits: true, playwright_fallback: controlled_only}
 akakce:
   enabled: false
   status: experimental
@@ -9,5 +9,5 @@ akakce:
   browser_headless: true
   minimum_request_interval_seconds: 300
 storage: {database_path: data/deal_watcher.sqlite3, log_directory: logs, instance_lock_path: data/deal_watcher.lock}
-notifications: {channels: [telegram, windows_toast], digest_interval_minutes: 180, send_runtime_started: true, send_first_successful_scan: true}
+notifications: {channels: [telegram], digest_interval_minutes: 180, send_runtime_started: true, send_first_successful_scan: true}
 rules: {captcha_bypass: forbidden, automatic_purchase: forbidden, suspicious_price_action: flag_anomaly}

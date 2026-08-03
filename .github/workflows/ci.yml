@@ -4,11 +4,20 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: ${{ matrix.os }} / Python ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
         python-version: ["3.12"]
@@ -22,9 +31,35 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
       - name: Sync locked dependencies
         run: uv sync --locked --extra dev
+      - name: Validate configuration
+        run: uv run deal-watcher validate-config
       - name: Test
         run: uv run pytest
       - name: Ruff lint
         run: uv run ruff check .
       - name: Ruff format
         run: uv run ruff format --check .
+      - name: Build package
+        run: uv build
+      - name: Parse PowerShell deployment scripts
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $failed = $false
+          foreach ($path in @(
+            '.\scripts\install_windows_task.ps1',
+            '.\scripts\uninstall_windows_task.ps1'
+          )) {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              $path,
+              [ref]$tokens,
+              [ref]$errors
+            ) | Out-Null
+            if ($errors.Count -gt 0) {
+              $errors | Format-List
+              $failed = $true
+            }
+          }
+          if ($failed) { exit 1 }

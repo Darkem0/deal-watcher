@@ -1,24 +1,83 @@
-# Uygulama planı
+# Roadmap
 
-Her fazdan önce kararları doğrula; tamamlanınca `STATUS.md` ve `DECISIONS.md` güncellenir.
+Deal Watcher is intentionally small: a local forum monitor, persistent baseline/deduplication, and bounded notification delivery. Roadmap items must preserve responsible source access and deterministic offline tests.
 
-2026-08-03 uygulama notu: Donanım Arşivi forum takibi aktif üretim kapsamındadır. Akakçe parserları, migrationları ve offline fixture testleri korunmuş; canlı Akakçe bileşeni 403 nedeniyle deneysel ve varsayılan kapalı bırakılmıştır. Gerçek secret ve Task Scheduler kurulumu kullanıcı onayına bırakıldı.
+## Completed foundation
 
-Forum entegrasyonu ve Telegram test bildirimi doğrulandı. Runtime başlangıcı ve process başına ilk başarılı Forum taraması durum bildirimleri eklendi; heartbeat kapsam dışıdır. Sonraki geliştirme odağı Windows Task Scheduler ve public GitHub yayınıdır. Akakçe canlı doğrulaması kapsam dışıdır; fiyat takibi için resmi “Fiyatı Takip Edin” özelliği kullanılmalıdır.
+- Layered Python 3.12 package with source, service, storage, notifier, runtime, and CLI boundaries.
+- YAML configuration validated with Pydantic.
+- SQLite migrations, baseline state, forum topics, events, delivery records, and backups.
+- Donanım Arşivi first-page parser with redacted/synthetic fixtures.
+- Turkish-aware category classification and urgent-signal handling.
+- Persistent event and channel-delivery deduplication.
+- Telegram notifier with retry, rate-limit handling, message limits, and secret redaction.
+- Process-start and first-success lifecycle notifications without periodic heartbeat.
+- Single-instance scheduler with interval, jitter, failure backoff, and graceful shutdown.
+- Windows Task Scheduler install/uninstall scripts using current-user `AtLogOn`.
+- English/Turkish public documentation, prompt library, Vibe Coding guide, issue templates, and cross-platform CI.
+- Akakçe parser experiments retained offline while live scheduling remains disabled.
 
-| Faz | Amaç | Dosyalar | Kabul kriteri | Test | Risk | Bağımlılık | Geri alma |
-|---|---|---|---|---|---|---|---|
-| 1 | Temel ayarlar ve modeller | models/, config/ | YAML/env doğrulanır | config/model | şema drift'i | yok | şema sürümü |
-| 2 | SQLite ve migration | storage/, migrations | idempotent boş DB | geçici SQLite | veri kaybı | 1 | yedek/ters migration |
-| 3 | Bildirim ve dedup | notifiers/, services/ | tek teslim | mock adapter | tekrar/secret | 1-2 | kanalı kapat |
-| 4 | Forum liste parserı | sources/forum.py, fixtures | tüm liste alanları | fixture parser | HTML drift | 1-2 | source kapat |
-| 5 | Forum zenginleştirme | sources/forum_topic.py | fiyat/kupon/stok çıkarımı | çoklu fiyat fixture | yanlış çıkarım | 4 | tamamlandı; live fixture yok |
-| 6 | Kategori/öncelik | services/classification.py | tüm kurallar | birim test | yanlış aciliyet | 4-5 | tamamlandı; düşük varsayılan |
-| 7 | Akakçe ürün parserı | sources/akakce_product.py | teklif alanları | fixture parser | anti-bot/drift | 1-2 | deneysel; canlı dışı |
-| 8 | RTX 5070 Ti parserı | sources/akakce_category.py | >=20 model, kesin filtre | karışık fixture | yanlış birleşme | 7 | deneysel; canlı dışı |
-| 9 | Geçmiş/anomali | services/pricing.py | 3/5/10 ve 1/7/30 gün | zaman kontrollü | eksik tarih | 2,7-8 | alarmı kapat |
-| 10 | Scheduler/Windows | scheduler.py, scripts/ | jitter/backoff/dry-run | sahte saat/ağ | aşırı sorgu | 3-9 | görev kapat |
-| 11 | Test/fixture paketi | tests/ | offline regresyon | pytest | bayat fixture | 1-10 | sürümle |
-| 12 | Dry-run | CLI, docs | DB/event/log, teslim yok | kontrollü çalışma | canlı istek | 1-11 | dry-run |
-| 13 | Telegram testi | notifier ayarları | tek test mesajı | onaylı canlı test | yanlış alıcı | 12 | token/kanal kapat |
-| 14 | Sürekli operasyon | scheduler, scripts | restart/backoff/log/backup | dayanıklılık | engel/kaynak | 13 | görev kapat |
+## Near-term priorities
+
+### 1. Forum pagination
+
+Add an explicitly configured second-page adapter without increasing request frequency unnecessarily.
+
+Acceptance criteria:
+
+- page-one failure and page-two failure remain isolated;
+- duplicate sticky topics across pages are collapsed by topic ID;
+- first-run baseline remains silent;
+- polling intervals remain independently configurable;
+- fixtures cover page overlap and partial success.
+
+### 2. Operational status command
+
+Provide a read-only CLI status view for the last successful source run, last failure, item count, task/runtime hints, and last delivered event.
+
+Acceptance criteria:
+
+- no secret output;
+- works with an empty database;
+- does not contact live sources;
+- timezone display is explicit.
+
+### 3. Digest semantics
+
+Decide whether `digest` should remain a label or become an actual delayed batching queue. Do not imply batching until the queue, retry, persistence, and tests exist.
+
+### 4. Parser drift diagnostics
+
+Improve minimal redacted failure artifacts and selector diagnostics while avoiding storage of full user-generated pages.
+
+## Later candidates
+
+- Additional public forum or feed sources with documented normal access.
+- Optional restoration/retention tooling for SQLite backups.
+- More classification fixtures for mixed-product, accessory, and Turkish spelling edge cases.
+- Packaging and installation improvements beyond repository-based `uv` setup.
+
+## Explicitly out of scope
+
+- CAPTCHA solving or anti-bot bypass.
+- Proxy rotation, stealth, fingerprint spoofing, or cookie theft.
+- Automatic purchasing, cart operations, payments, or stock reservation.
+- Enabling a source by default before normal access and live maintenance are verified.
+
+## Change gate
+
+Each roadmap change should define:
+
+1. context and source-access boundary;
+2. observable acceptance criteria;
+3. deterministic offline tests;
+4. migration and rollback impact;
+5. live verification limits;
+6. documentation changes;
+7. Git and release evidence.
+
+---
+
+# Yol haritası — Türkçe özet
+
+Kısa vadeli odaklar: forum ikinci sayfa desteği, secret göstermeyen bir durum komutu, `digest` davranışının açık biçimde karara bağlanması ve parser drift tanılamasının geliştirilmesidir. CAPTCHA/anti-bot aşma, proxy/stealth yöntemleri ve otomatik satın alma kapsam dışıdır.
