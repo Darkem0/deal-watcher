@@ -4,6 +4,7 @@
 
 - Local repository started on `master`, commit `68e5f66`.
 - Release preparation was committed separately as `f0910c5` on `main`.
+- Final release notes were committed as `29ce5d7` and pushed to `origin/main`.
 - The public remote is now configured as `origin`.
 - GitHub CLI is installed and authenticated as `Darkem0`.
 - The Windows `DealWatcher` task was left running as requested.
@@ -62,19 +63,21 @@ Before publication preparation: `55 passed`, Ruff lint passed, Ruff format passe
 
 ## 15. Commit history
 
-The initial implementation commit was preserved. Public preparation is a separate readable commit: `f0910c5 docs: prepare bilingual public release`.
+The initial implementation commit was preserved. Public preparation is a separate readable commit: `f0910c5 docs: prepare bilingual public release`. Final release notes are in `29ce5d7`.
 
 ## 16. GitHub repository
 
-Published target: `https://github.com/Darkem0/deal-watcher` (public, default branch `main`).
+Published target: [github.com/Darkem0/deal-watcher](https://github.com/Darkem0/deal-watcher) (public, default branch `main`).
 
 ## 17. Release
 
-Target tag: `v0.1.0-alpha`, pre-release. Release notes state the alpha limitation, active Donanım Arşivi source, Akakçe disabled status, and responsible source-access policy.
+Published tag: `v0.1.0-alpha` at `29ce5d7cfec14ac1006ee6bc8a1bbf0b98643d9c`.
+
+Release: [Deal Watcher v0.1.0-alpha](https://github.com/Darkem0/deal-watcher/releases/tag/v0.1.0-alpha), public pre-release. Notes state the alpha limitation, active Donanım Arşivi source, Akakçe disabled status, and responsible source-access policy.
 
 ## 18. CI status
 
-CI workflow was pushed with the public repository. GitHub Actions status will be checked after the workflow run; no passing CI badge is claimed before GitHub reports a result.
+CI workflow passed on Ubuntu and Windows with Python 3.12: [main run 30818078495](https://github.com/Darkem0/deal-watcher/actions/runs/30818078495). The tag push also completed successfully: [tag run 30818090410](https://github.com/Darkem0/deal-watcher/actions/runs/30818090410).
 
 ## 19. Remaining limitations
 
@@ -82,9 +85,9 @@ The Forum adapter focuses on the first listing page. Akakçe is not live-verifie
 
 ## 20. Final verdict
 
-`GITHUB_PUBLIC_RELEASE_READY`
+`GITHUB_PUBLIC_RELEASE_PUBLISHED`
 
-Repository creation and main push are complete. The release tag, GitHub Release, and CI result are recorded after their respective commands complete.
+Repository creation, public main push, pre-release tag, GitHub Release, and CI verification are complete.
 
 ## 21. Commands executed
 
@@ -100,4 +103,7 @@ git diff --check
 git ls-files
 git check-ignore -v .env
 gh auth status
+gh repo view Darkem0/deal-watcher
+gh release view v0.1.0-alpha
+gh run list --workflow ci.yml
 ```
