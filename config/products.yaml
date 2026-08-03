@@ -1,0 +1,20 @@
+version: 1
+defaults:
+  poll_interval_minutes: 12
+  target_price_try: null
+  thresholds: {normal_drop_percent: 3, high_drop_percent: 5, urgent_drop_percent: 10}
+products:
+  - {id: asus-proart-x870e-creator-wifi, source: akakce, source_type: product_page, name: Asus ProArt X870E-Creator Wi-Fi anakart, url: "https://www.akakce.com/anakart/en-ucuz-asus-proart-x870e-creator-wi-fi-amd-am5-ddr5-atx-fiyati,741704230.html", target_price_try: null}
+  - id: rtx-5070-ti
+    source: akakce
+    source_type: category_page
+    name: NVIDIA GeForce RTX 5070 Ti kategori sayfası
+    url: "https://www.akakce.com/ekran-karti/rtx-5070-ti,1,2.html"
+    target_price_try: null
+    category_policy:
+      minimum_models: 20
+      include_exact: RTX 5070 Ti
+      exclude_terms: [RTX 5070, laptop, hazır sistem, soğutucu, water block, aksesuar]
+  - {id: amd-ryzen-7-9700x, source: akakce, source_type: product_page, name: AMD Ryzen 7 9700X işlemci, url: "https://www.akakce.com/islemci/en-ucuz-amd-ryzen-7-9700x-sekiz-cekirdek-3-8-ghz-fiyati,706818645.html", target_price_try: null}
+  - {id: ronic-nutrition-ultimate-4000g-cikolata, source: akakce, source_type: product_page, name: Ronic Nutrition Ultimate 4000 gr Çikolata Aromalı Whey, url: "https://www.akakce.com/protein-tozu/en-ucuz-ronic-nutrition-ultimate-4000-gr-cikolata-aromali-whey-fiyati,1461185215.html", target_price_try: null}
+  - {id: huawei-watch-gt-6-41mm-mor, source: akakce, source_type: product_page, name: Huawei Watch GT 6 41 mm Mor, url: "https://www.akakce.com/akilli-saat/en-ucuz-huawei-watch-gt-6-41mm-mor-fiyati,1194735676.html", target_price_try: null}

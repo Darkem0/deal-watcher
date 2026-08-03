@@ -1,0 +1,13 @@
+version: 1
+source: {name: Donanım Arşivi Sıcak Fırsatlar, url: "https://forum.donanimarsivi.com/forumlar/Sicakfirsatlar/"}
+polling: {first_page_minutes: 3, second_page_minutes: 15, jitter_seconds: [10, 45]}
+baseline_on_first_success: true
+notify_reply_count_only: false
+priorities:
+  urgent_categories: [gpu, cpu, motherboard, cpu_cooler]
+  normal_categories: [cooling_and_fans, memory, storage, power_supply, pc_case, monitor, laptop, complete_system, peripherals, networking, phone_tablet_watch, audio, supplement, bank_campaign, grocery]
+  digest_categories: [other]
+urgent_signals: [fiyat_hatasi, son_stok, bir_veya_iki_stok, sinirli_stok, tekrar_stokta, guclu_kupon, sepette_indirim, olagan_disi_dusuk_fiyat]
+categories: [gpu, cpu, motherboard, cpu_cooler, cooling_and_fans, memory, storage, power_supply, pc_case, monitor, laptop, complete_system, peripherals, networking, phone_tablet_watch, audio, supplement, bank_campaign, grocery, other]
+re_notification_events: [fiyat_dustu, stok_geri_geldi, indirim_bitti, acil_stok_ifadesi_eklendi, hedef_urun_eslesmesi]
+ignore_or_classify: [sabitlenmis, kilitli, reklam, indirim_bitti, stok_bitti, ana_konu]
