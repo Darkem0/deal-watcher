@@ -106,19 +106,13 @@ def classify_topic(
         parts.append(detail.first_message)
         parts.extend(detail.product_names)
     haystack = normalize_text(" ".join(parts))
-    found = [
-        candidate for candidate, terms in CATEGORY_TERMS if _contains_any(haystack, terms)
-    ]
+    found = [candidate for candidate, terms in CATEGORY_TERMS if _contains_any(haystack, terms)]
     for candidate, terms in EXCLUSIONS.items():
         if candidate in found and _contains_any(haystack, terms):
             found.remove(candidate)
     target_haystack = normalize_text(" ".join(target_names))
     target_category = next(
-        (
-            candidate
-            for candidate, terms in CATEGORY_TERMS
-            if _contains_any(target_haystack, terms)
-        ),
+        (candidate for candidate, terms in CATEGORY_TERMS if _contains_any(target_haystack, terms)),
         None,
     )
     category = (
@@ -134,7 +128,9 @@ def classify_topic(
     )
     if detail is not None:
         normalized_stock_status = normalize_text(detail.stock_status or "")
-        urgent = urgent or detail.back_in_stock or detail.personalized_coupon or detail.cart_discount
+        urgent = (
+            urgent or detail.back_in_stock or detail.personalized_coupon or detail.cart_discount
+        )
         urgent = urgent or normalized_stock_status in {
             normalize_text("son stok"),
             normalize_text("1 adet"),
