@@ -2,8 +2,9 @@
 
 ## 1. Initial repository state
 
-- Local repository was on `master`, commit `68e5f66`.
-- No GitHub remote was configured at the start of this publication task.
+- Local repository started on `master`, commit `68e5f66`.
+- Release preparation was committed separately as `f0910c5` on `main`.
+- The public remote is now configured as `origin`.
 - GitHub CLI is installed and authenticated as `Darkem0`.
 - The Windows `DealWatcher` task was left running as requested.
 
@@ -61,19 +62,19 @@ Before publication preparation: `55 passed`, Ruff lint passed, Ruff format passe
 
 ## 15. Commit history
 
-The repository currently has a single initial commit. Publication preparation will use a separate readable commit rather than amending the initial commit.
+The initial implementation commit was preserved. Public preparation is a separate readable commit: `f0910c5 docs: prepare bilingual public release`.
 
 ## 16. GitHub repository
 
-Target: `https://github.com/Darkem0/deal-watcher` (public, default branch `main`).
+Published target: `https://github.com/Darkem0/deal-watcher` (public, default branch `main`).
 
 ## 17. Release
 
-Target tag: `v0.1.0-alpha`, pre-release. It must state the alpha limitation, active Donanım Arşivi source, Akakçe disabled status, and responsible source-access policy.
+Target tag: `v0.1.0-alpha`, pre-release. Release notes state the alpha limitation, active Donanım Arşivi source, Akakçe disabled status, and responsible source-access policy.
 
 ## 18. CI status
 
-CI status will be recorded after the first push and workflow dispatch. No passing CI badge is claimed before GitHub reports a result.
+CI workflow was pushed with the public repository. GitHub Actions status will be checked after the workflow run; no passing CI badge is claimed before GitHub reports a result.
 
 ## 19. Remaining limitations
 
@@ -81,9 +82,9 @@ The Forum adapter focuses on the first listing page. Akakçe is not live-verifie
 
 ## 20. Final verdict
 
-`DOCUMENTATION_FIXES_REQUIRED`
+`GITHUB_PUBLIC_RELEASE_READY`
 
-This report is updated after GitHub authentication, repository creation, push, tag, release, and CI verification. Until those steps complete, publication is not claimed.
+Repository creation and main push are complete. The release tag, GitHub Release, and CI result are recorded after their respective commands complete.
 
 ## 21. Commands executed
 
