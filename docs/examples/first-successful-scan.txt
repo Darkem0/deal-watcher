@@ -1,0 +1,6 @@
+Sistem çalışıyor.
+
+Son tarama başarılı.
+Çekilen konu: 15
+Yeni konu: 0
+Tarama zamanı: 03.08.2026 16:00:00

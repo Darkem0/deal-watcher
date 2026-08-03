@@ -63,7 +63,7 @@ Telegram messages. Uninstall targets only the named task.
 
 Exact user command:
 
-    powershell -NoProfile -ExecutionPolicy Bypass -File ".\scripts\install_windows_task.ps1" -ProjectRoot "C:\Users\emre\Documents\deal-watcher"
+    powershell -NoProfile -ExecutionPolicy Bypass -File ".\scripts\install_windows_task.ps1" -ProjectRoot "C:\Projects\deal-watcher"
 
 No real task was created.
 

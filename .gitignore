@@ -16,3 +16,5 @@ logs/*
 !logs/.gitkeep
 *.patch
 audit/
+htmlcov/
+.ruff_cache/

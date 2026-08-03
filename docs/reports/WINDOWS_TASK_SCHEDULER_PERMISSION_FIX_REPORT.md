@@ -88,7 +88,7 @@ WINDOWS_TASK_READY
 ## 16. Commands executed
 
 pwsh PowerShell parser validation for both scripts
-pwsh install_windows_task.ps1 -ProjectRoot C:\Users\emre\Documents\deal-watcher
+pwsh install_windows_task.ps1 -ProjectRoot C:\Projects\deal-watcher
 Get-ScheduledTask -TaskName DealWatcher
 Get-ScheduledTaskInfo -TaskName DealWatcher
 Start-ScheduledTask -TaskName DealWatcher

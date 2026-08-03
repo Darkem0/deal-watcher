@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose a bounded, responsible improvement.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What should change and why?
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Proposed source
+  - type: textarea
+    id: access
+    attributes:
+      label: Public accessibility, API/feed, and permission evidence
+  - type: textarea
+    id: polling
+    attributes:
+      label: Polling and maintenance
+      description: Include expected frequency and rate limits.
+  - type: textarea
+    id: legal
+    attributes:
+      label: Legal/ToS considerations and CAPTCHA/anti-bot status
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Boundaries
+      options:
+        - label: This does not require CAPTCHA, proxy, stealth, or access-control bypass.
+          required: true
+        - label: This does not add automatic purchase, cart, reservation, or payment.
+          required: true

@@ -26,6 +26,7 @@ CATEGORY_TERMS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("storage", ("ssd", "nvme", "hard disk", "hdd")),
     ("power_supply", ("psu", "güç kaynağı", "guc kaynagi")),
     ("monitor", ("monitör", "monitor")),
+    ("laptop", ("laptop", "notebook", "dizüstü", "dizustu")),
     ("phone_tablet_watch", ("akıllı telefon", "tablet", "akıllı saat", "watch")),
     ("audio", ("kulaklık", "mikrofon", "hoparlör")),
     ("supplement", ("whey", "protein tozu", "takviye")),

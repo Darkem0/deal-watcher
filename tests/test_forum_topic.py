@@ -81,6 +81,15 @@ def test_classification_uses_message_and_secondary_categories(app_config) -> Non
     assert result.priority.value == "urgent"
 
 
+def test_laptop_category_is_declared_and_classified(app_config) -> None:
+    result = classify_topic(
+        ForumTopic("laptop", "https://example.test/laptop", "Laptop fırsatı"),
+        app_config.forum,
+    )
+    assert result.category == "laptop"
+    assert result.priority.value == "normal"
+
+
 def test_missing_message_is_controlled_parse_error() -> None:
     with pytest.raises(ForumTopicDetailParseError, match="first message"):
         DonanimArsiviForumTopicParser().parse("<html><body></body></html>", BASE_URL)

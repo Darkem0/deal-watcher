@@ -1,11 +1,10 @@
 # Acknowledgements
 
-Donanım Arşivi forum takip yaklaşımının tasarımında aşağıdaki herkese açık projeler
-referans alınmıştır:
+Donanım Arşivi forum takip yaklaşımının tasarımında aşağıdaki herkese açık projeler araştırma ve tasarım tartışmaları için incelenmiştir:
 
 - TanrikuluEmre/fiyat-bot
 - 0Alduin0/donanim-arsiv
 
-Bu referans için izin alınmıştır. Deal Watcher bağımsız biçimde yeniden yazılmıştır.
-Bu projelere ait verilmemiş bir lisans varmış gibi gösterilmez; bu dosya kaynak
-projelerin lisansını değiştirmez veya onlar adına bir lisans beyanı oluşturmaz.
+Deal Watcher bağımsız biçimde uygulanmıştır. Bu teşekkür, izin, sahiplik,
+onay veya lisans ilişkisi olduğu anlamına gelmez; kaynak projelerin lisansları
+ve hakları hakkında doğrulanmamış bir iddia içermez.

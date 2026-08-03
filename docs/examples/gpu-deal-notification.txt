@@ -1,0 +1,7 @@
+Representative example only; values are fictional.
+
+Kaynak: donanim_arsivi_sicak_firsatlar
+Başlık/Ürün: [ÖRNEK] RTX ekran kartı fırsatı
+Fiyat: 24.999,00 TL
+Öncelik: urgent
+Olay: yeni_konu

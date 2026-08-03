@@ -1,39 +1,50 @@
-# Windows dağıtımı
+# Windows deployment
 
-Geliştirme/test ortamı Windows'tur. .venv, YAML doğrulaması ve tüm offline
-testler operations.md komutlarıyla çalışır. Yerel bildirim WindowsToastNotifier
-adaptöründedir ve uv sync --extra notifications gerektirir.
+This guide uses `C:\Projects\deal-watcher` as a neutral example path.
 
-install_windows_task.ps1 preflight sonrasında görevi mevcut kullanıcı için
-Interactive ve Limited principal ile kaydeder. Varsayılan tetikleyici kullanıcı
-girişidir; -AtStartup sistem başlangıcını seçer. Görev, proje kökünden
-.venv\Scripts\python.exe -m deal_watcher.cli run komutunu çalıştırır; .env
-buradan yüklenir, log klasörü oluşturulur ve Akakçe kapalı kalır.
+## Requirements and setup
 
-Erişim reddedilirse, -NoElevation verilmemişse script kendisini tek sefer UAC
-ile yükseltir. Var olan görev -Force olmadan değiştirilmez. Kullanıcı
-oturumu yokken çalıştırma Interactive principal yerine ayrıca Windows
-admin/credential kararı gerektirir.
-
-Kurulum:
+Install Python 3.12+ and [uv](https://docs.astral.sh/uv/), then:
 
 ```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -File ".\scripts\install_windows_task.ps1" -ProjectRoot "C:\Users\emre\Documents\deal-watcher"
+git clone https://github.com/Darkem0/deal-watcher.git C:\Projects\deal-watcher
+Set-Location C:\Projects\deal-watcher
+uv sync --locked
+Copy-Item .env.example .env
+uv run deal-watcher validate-config
 ```
 
-Kurulumdan sonra doğrulama:
+Create a Telegram bot with BotFather, identify the chat ID, and keep both values only in `.env`. Preview with `uv run deal-watcher test-notification --dry-run`; a real notification requires the explicit `--send` command and operator approval.
+
+## Forum operation
 
 ```powershell
-Get-ScheduledTask -TaskName "DealWatcher"
-Get-ScheduledTaskInfo -TaskName "DealWatcher"
-Start-ScheduledTask -TaskName "DealWatcher"
-Start-Sleep -Seconds 15
-Get-ScheduledTaskInfo -TaskName "DealWatcher"
+uv run deal-watcher once --source forum --dry-run
+uv run deal-watcher run
 ```
 
-pwsh.exe yoksa script powershell.exe fallback kullanır. Kaldırma scripti
-yalnız belirtilen görevi hedefler ve aynı UAC modelini kullanır:
+The first successful scan establishes baseline and does not bulk-send existing topics. The first page is polled about every three minutes with jitter. Akakçe is experimental and disabled by default.
+
+## Task Scheduler installation
+
+The installer first registers a current-user `Interactive`/`Limited` task with an `AtLogOn` trigger. If Windows denies registration, it performs one controlled UAC self-elevation attempt. `-NoElevation` disables that fallback; `-Force` is required to replace an existing task.
 
 ```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -File ".\scripts\uninstall_windows_task.ps1" -TaskName "DealWatcher"
+pwsh -NoProfile -ExecutionPolicy Bypass -File ".\scripts\install_windows_task.ps1" -ProjectRoot "C:\Projects\deal-watcher"
+Get-ScheduledTask -TaskName DealWatcher
+Get-ScheduledTaskInfo -TaskName DealWatcher
 ```
+
+The action runs the project Python with `-m deal_watcher.cli run`, uses the project root as working directory, and loads `.env` from that root. The task is configured to tolerate battery operation and restart transient failures.
+
+`LastTaskResult` `267009` / `0x41301` means the continuous task is currently running. It is not an error. Inspect `logs/deal-watcher.log` without exposing credentials.
+
+## Stop, start, uninstall
+
+```powershell
+Stop-ScheduledTask -TaskName DealWatcher
+Start-ScheduledTask -TaskName DealWatcher
+pwsh -NoProfile -ExecutionPolicy Bypass -File ".\scripts\uninstall_windows_task.ps1" -TaskName DealWatcher
+```
+
+The uninstaller targets only the named task and reports a missing task clearly. For troubleshooting, rerun config validation, inspect UAC policy, and keep 403/CAPTCHA sources disabled rather than attempting a bypass.
