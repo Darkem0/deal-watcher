@@ -41,10 +41,32 @@ CATEGORY_TERMS: tuple[tuple[str, tuple[str, ...]], ...] = (
 EXCLUSIONS = {
     "gpu": ("ekran kartı tutucu", "hazır sistem", "hazir sistem", "ekran kartı standı"),
     "cpu": ("işlemci soğutucu", "islemci sogutucu", "termal macun"),
-    "storage": ("ssd kutusu", "ssd kutusu", "nvme kutusu"),
+    "storage": ("ssd kutusu", "nvme kutusu"),
     "power_supply": ("psu kablosu", "güç kaynağı kablosu"),
     "phone_tablet_watch": ("watch kayışı", "watch kayisi", "saat kayışı"),
 }
+
+URGENT_SIGNAL_TERMS: dict[str, tuple[str, ...]] = {
+    "fiyat_hatasi": ("fiyat hatası", "fiyat hatasi", "yanlış fiyat", "yanlis fiyat"),
+    "son_stok": ("son stok",),
+    "bir_veya_iki_stok": ("1 stok", "2 stok", "1 adet", "2 adet", "bir stok", "iki stok"),
+    "sinirli_stok": ("sınırlı stok", "sinirli stok"),
+    "tekrar_stokta": ("tekrar stokta", "yeniden stokta", "stok geri geldi"),
+    "guclu_kupon": ("güçlü kupon", "guclu kupon", "kupon kodu", "kuponla"),
+    "sepette_indirim": ("sepette indirim", "sepette"),
+    "olagan_disi_dusuk_fiyat": ("olağan dışı düşük fiyat", "olagan disi dusuk fiyat"),
+}
+
+TURKISH_ASCII_TRANSLATION = str.maketrans(
+    {
+        "ç": "c",
+        "ğ": "g",
+        "ı": "i",
+        "ö": "o",
+        "ş": "s",
+        "ü": "u",
+    }
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -55,8 +77,21 @@ class Classification:
     secondary_categories: tuple[str, ...] = ()
 
 
+def _fold_text(value: str) -> str:
+    folded = value.casefold().replace("i\u0307", "i").translate(TURKISH_ASCII_TRANSLATION)
+    return re.sub(r"\s+", " ", folded)
+
+
 def normalize_text(value: str) -> str:
-    return re.sub(r"\s+", " ", value.casefold().replace("i\u0307", "i")).strip()
+    return _fold_text(value).strip()
+
+
+def _contains_any(haystack: str, terms: tuple[str, ...]) -> bool:
+    return any(_fold_text(term) in haystack for term in terms)
+
+
+def _configured_urgent_terms(signal: str) -> tuple[str, ...]:
+    return URGENT_SIGNAL_TERMS.get(signal, (signal.replace("_", " "),))
 
 
 def classify_topic(
@@ -71,18 +106,13 @@ def classify_topic(
         parts.append(detail.first_message)
         parts.extend(detail.product_names)
     haystack = normalize_text(" ".join(parts))
-    found = [
-        candidate for candidate, terms in CATEGORY_TERMS if any(term in haystack for term in terms)
-    ]
+    found = [candidate for candidate, terms in CATEGORY_TERMS if _contains_any(haystack, terms)]
     for candidate, terms in EXCLUSIONS.items():
-        if any(term in haystack for term in terms) and candidate in found:
+        if candidate in found and _contains_any(haystack, terms):
             found.remove(candidate)
+    target_haystack = normalize_text(" ".join(target_names))
     target_category = next(
-        (
-            candidate
-            for candidate, terms in CATEGORY_TERMS
-            if any(term in normalize_text(" ".join(target_names)) for term in terms)
-        ),
+        (candidate for candidate, terms in CATEGORY_TERMS if _contains_any(target_haystack, terms)),
         None,
     )
     category = (
@@ -93,13 +123,20 @@ def classify_topic(
     secondary = tuple(item for item in found if item != category and item in config.categories)
     target_match = any(normalize_text(name) in haystack for name in target_names)
     urgent = target_match or any(
-        signal.replace("_", " ") in haystack for signal in config.urgent_signals
+        _contains_any(haystack, _configured_urgent_terms(signal))
+        for signal in config.urgent_signals
     )
     if detail is not None:
+        normalized_stock_status = normalize_text(detail.stock_status or "")
         urgent = (
             urgent or detail.back_in_stock or detail.personalized_coupon or detail.cart_discount
         )
-        urgent = urgent or detail.stock_status in {"son stok", "1 adet", "2 adet", "sınırlı stok"}
+        urgent = urgent or normalized_stock_status in {
+            normalize_text("son stok"),
+            normalize_text("1 adet"),
+            normalize_text("2 adet"),
+            normalize_text("sınırlı stok"),
+        }
     relevant = [category, *secondary]
     if urgent or any(item in config.priorities.urgent_categories for item in relevant):
         priority = NotificationPriority.URGENT
@@ -117,9 +154,9 @@ def topic_signals(topic: ForumTopic) -> set[str]:
         )
     )
     signals: set[str] = set()
-    if "tekrar stokta" in text or "stok geri" in text:
+    if _contains_any(text, ("tekrar stokta", "stok geri", "yeniden stokta")):
         signals.add("stok_geri_geldi")
-    if "indirim bitti" in text:
+    if _contains_any(text, ("indirim bitti",)):
         signals.add("indirim_bitti")
     if topic.detail is not None:
         if topic.detail.back_in_stock:
@@ -130,10 +167,16 @@ def topic_signals(topic: ForumTopic) -> set[str]:
             signals.add("fiyat_tespit_edildi")
         if topic.detail.coupon_codes:
             signals.add("kupon_tespit_edildi")
-        if topic.detail.stock_status in {"son stok", "1 adet", "2 adet", "sınırlı stok"}:
+        normalized_stock_status = normalize_text(topic.detail.stock_status or "")
+        if normalized_stock_status in {
+            normalize_text("son stok"),
+            normalize_text("1 adet"),
+            normalize_text("2 adet"),
+            normalize_text("sınırlı stok"),
+        }:
             signals.add("düşük_stok")
-    if "ana konu" in text:
+    if _contains_any(text, ("ana konu",)):
         signals.add("ana_konu")
-    if "reklam" in text:
+    if _contains_any(text, ("reklam",)):
         signals.add("reklam")
     return signals

@@ -35,7 +35,7 @@ Get-ScheduledTask -TaskName DealWatcher
 Get-ScheduledTaskInfo -TaskName DealWatcher
 ```
 
-The action runs the project Python with `-m deal_watcher.cli run`, uses the project root as working directory, and loads `.env` from that root. The task is configured to tolerate battery operation and restart transient failures.
+The action runs the project’s windowless `pythonw.exe` with `-m deal_watcher.cli run`, uses the project root as working directory, and loads `.env` from that root. No console window is opened, so closing a terminal window cannot stop the task. The task is configured to tolerate battery operation, user idle-state changes, and transient failures.
 
 `LastTaskResult` `267009` / `0x41301` means the continuous task is currently running. It is not an error. Inspect `logs/deal-watcher.log` without exposing credentials.
 

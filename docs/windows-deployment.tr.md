@@ -46,7 +46,7 @@ Script önce normal kullanıcı kaydını dener. Windows erişim politikası izi
 
 Görev oturum açıldığında çalışır; kullanıcı oturumu olmadan SYSTEM/credential ile çalıştırma bu kurulumun varsayılanı değildir. Akakçe kapalıdır; Forum aktiftir.
 
-Forum ilk sayfası yaklaşık beş dakikada bir taranır. Task Scheduler idle sonlandığında görevi durdurmayacak şekilde yapılandırılır; sürekli runtime için execution time limit de kapatılır.
+Forum ilk sayfası yaklaşık beş dakikada bir taranır. Task Scheduler idle sonlandığında görevi durdurmayacak şekilde yapılandırılır; sürekli runtime için execution time limit de kapatılır. Görev `pythonw.exe` ile başlatıldığı için konsol penceresi açılmaz; yanlışlıkla pencere kapatma süreci durdurmaz.
 
 `LastTaskResult=267009` veya `0x41301`, görevin çalışıyor olduğunu gösterir; hata değildir. Görev loglarını `logs/deal-watcher.log` altında, secret içermeyecek biçimde kontrol edin.
 

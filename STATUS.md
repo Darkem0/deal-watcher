@@ -1,67 +1,60 @@
-# Durum
+# Project status
 
-**Aşama:** Donanım Arşivi forum takipçisi üretime hazır; Akakçe canlı scraping üretim kapsamı dışındadır (2026-08-03).
+## Current release
 
-## Akakçe kapsam kararı
+- **Release:** `v0.1.0-alpha`
+- **Primary source:** Donanım Arşivi Sıcak Fırsatlar, first listing page
+- **Default notification channel:** Telegram
+- **Persistence:** local SQLite
+- **Windows deployment:** current-user Task Scheduler task triggered at logon
+- **Akakçe:** experimental, disabled by default, not live-verified
 
-- Donanım Arşivi takibi aktif üretim özelliğidir.
-- Akakçe parserı deneysel ve varsayılan olarak kapalıdır (`enabled: false`, `status: experimental`). Kod, migration ve offline fixture testleri silinmemiştir.
-- Normal HTTP canlı doğrulamasında Akakçe HTTP 403 döndürdü; canlı erişim doğrulanamamıştır.
-- CAPTCHA, proxy, cloudscraper, stealth, fingerprint değiştirme veya erişim kontrolü aşma uygulanmaz.
-- Fiyat alarmı için Akakçe’nin resmi “Fiyatı Takip Edin” özelliği önerilir.
-- Akakçe kapalıyken scheduler job oluşturmaz, erişim/source failure bildirimi üretmez; forum bağımsız çalışır.
+## Verified behavior
 
-## 2026-08-03 production blocker remediation
+- The first successful forum scan establishes a silent baseline.
+- Later scans create events for new topics and selected state changes.
+- Persistent event and delivery keys prevent duplicate channel delivery.
+- `runtime_started` is emitted once per process when enabled.
+- `first_successful_scan` is emitted once per process after the first successful forum scan.
+- There is no daily, hourly, or per-scan heartbeat.
+- Telegram errors are isolated from source execution and redacted before persistence.
+- Forum polling uses the configured five-minute interval plus 10–45 second jitter.
+- Windows autostart uses an `Interactive`/`Limited` current-user task and a controlled UAC fallback.
+- CI runs deterministic offline tests and Ruff checks on Windows and Ubuntu.
 
-- Unknown shipping (`total_price=NULL`) ile ardışık Akakçe snapshot'ları artık karşılaştırılabilir fiyat havuzundan dışlanır; boş havuz `None` döndürür.
-- Akakçe `PriceEvent` ve parser akışı yalnız deneysel/offline kapsamda korunur; varsayılan runtime bunları çalıştırmaz.
-- Scheduler yalnız etkin kaynaklar için job oluşturur; forum bağımsız çalışır.
-- `.env`/`--env-file` yüklemesi process environment'ı ezmeden eklendi; Windows UTF-8 çıktısı best-effort yapılandırılır.
-- Telegram hata metinleri delivery kaydından önce redakte edilir; notifier timeout, sınırlı retry, 429 `Retry-After` ve 4096 karakter sınırını uygular.
-- Gerçek Akakçe HTTP ön kontrolü 403 döndü; canlı erişim doğrulanamadı. Browser/proxy/CAPTCHA bypass yolu üretim kapsamından çıkarıldı.
-- Donanım Arşivi sayfa 1 için tek normal HTTP smoke isteği HTTP 200 döndürdü; parser 15 konu ve parser hatası olmayan bir sonuç üretti. Ayrıntı doğrulama betiği yanlış alan adı nedeniyle yarıda kaldı; ikinci canlı istek yapılmadı.
-- Telegram canlı test bildirimi bir kez gönderildi; chat ID maskeli gösterildi, Message ID 5 ve delivery=delivered sonucu alındı. Token çıktılanmadı.
+## Source access decision
 
-## Tamamlanan
+Controlled direct automated HTTP access to Akakçe returned HTTP 403. The production scheduler therefore does not create an Akakçe job. Parser code and fixtures remain available for offline regression work. The project does not add CAPTCHA solving, proxy rotation, stealth, fingerprint spoofing, or access-control bypass.
 
-- Mevcut Forum parserı, baseline, dedup, SQLite ve eski testler korunarak çalışıyor.
-- Kontrollü `httpx` istemcisi: timeout, retry, exponential backoff+jitter, `Retry-After`, minimum host aralığı, sabit User-Agent, response boyutu/içerik türü kontrolü ve kontrollü access/CAPTCHA failure.
-- Akakçe tekil ürün parserı dört ürün config ID’siyle çalışıyor; çoklu teklif, Türkçe fiyat, kargo, stok ve taksit çıkarıyor.
-- RTX 5070 Ti kategori parserı exact chipset ve negatif ürün filtreleriyle çalışıyor.
-- Migration 3–4 ürün snapshot/state, fiyat event ve kategori state tablolarını ekliyor; migration idempotent.
-- Fiyat geçmişi baseline, yüzde 3/5/10 eşikleri, dip fiyatları, stok dönüşü/çıkışı, hedef fiyat ve kategori yeni/en ucuz model event API’si sağlıyor.
-- `once`, `run`, `test-notification` ve `backup-db` CLI komutları eklendi.
-- Scheduler runtime, tek instance lock, jitter, başarısız iş backoff’u ve graceful shutdown kullanıyor.
-- Rotating file/console logging ve secret redaction eklendi.
-- Windows Task Scheduler scripti runtime/config preflight, `-Force`, logon/startup ve güvenli uninstall davranışıyla güncellendi.
-- Akakçe ve HTTP fixture/test paketi eklendi.
-- Windows Task Scheduler görevi kullanıcı idle durumundan çıkınca durmasın diye `StopOnIdleEnd=false` ve limitsiz execution time ile yeniden kaydedildi; Forum ilk sayfa polling aralığı 5 dakikaya çıkarıldı.
+## Known limitations
 
-## Doğrulama
+- The production forum adapter currently focuses on the first listing page.
+- Forum HTML changes may require reviewed fixture and selector updates.
+- `digest` is currently a priority label, not a delayed batching queue.
+- Telegram and Task Scheduler require local operator configuration.
+- This is an alpha release and does not promise uninterrupted availability.
 
-- `pytest`: 50 test başarılı.
-- Ruff lint ve format: başarılı.
-- Config validation: başarılı.
-- Akakçe parser fixture testleri korunuyor; varsayılan config bu kaynağı çalıştırmıyor.
-- Forum fixture once: offline akış işlendi.
-- SQLite backup CLI: başarılı.
-- Scheduler ve kaynak modülleri import testi: başarılı.
+## Quality gate
 
-## Kullanıcıya bağlı
+Every release candidate must pass:
 
-- Gerçek Telegram test mesajı gönderildi; normal forum bildirimleri için ayrıca kullanıcı onayı gerekir.
-- Gerçek Windows Task Scheduler görevi oluşturulmadı.
-- Canlı Akakçe doğrulaması 403 nedeniyle yapılamadı; Forum smoke sonucu HTTP 200 ve 15 konu olarak kaydedildi. Tüm canlı alan assertion'ları yanlış verifier alan adı nedeniyle tamamlanamadı.
-- Gerçek `.env` secret değerleri ayarlanmadı.
+```powershell
+uv sync --locked --extra dev
+uv run pytest
+uv run ruff check .
+uv run ruff format --check .
+uv run deal-watcher validate-config
+git diff --check
+```
 
-## Kalan sınırlamalar
+Live websites, Telegram credentials, and Windows Task Scheduler are not CI dependencies.
 
-- Akakçe fixture’ları sentetik; DOM drift kontrollü parser failure olarak raporlanır. Canlı scraping üretim vaadi değildir.
+---
 
-## Sonraki odak
+# Durum — Türkçe özet
 
-Donanım Arşivi forum entegrasyonu, Telegram bildirimi, Windows Task Scheduler ve public GitHub yayını.
-- Runtime başlangıcı (`runtime_started`) ve process başına ilk başarılı Forum taraması (`first_successful_scan`) bildirimleri etkinleştirildi; günlük/saatlik heartbeat eklenmedi.
-- Canlı Task Scheduler doğrulamasında aynı process için iki lifecycle Telegram delivery'si birer kez `delivered` oldu; iki ek Forum turunda tekrar oluşmadı.
-- İkinci Forum sayfası pagination adaptörü henüz yoktur.
-- Gelişmiş median anomaly ve cooldown politikası sonraki küçük iyileştirmedir.
+Deal Watcher’ın aktif üretim kaynağı Donanım Arşivi Sıcak Fırsatlar’ın ilk liste sayfasıdır. İlk tarama sessiz baseline oluşturur; sonraki uygun olaylar Telegram’a tekilleştirilmiş biçimde gönderilir. Windows’ta mevcut kullanıcı oturum açtığında başlayan Task Scheduler kurulumu desteklenir.
+
+Akakçe kontrollü doğrulamada HTTP 403 döndürdüğü için deneysel ve varsayılan kapalıdır. CAPTCHA veya erişim kontrolü aşma uygulanmaz. Bilinen ana sınırlamalar ilk sayfaya odaklanma, forum HTML drift riski ve `digest` için ayrı bir toplu kuyruk bulunmamasıdır.
+
+- Windows Task Scheduler idle termination is disabled (`StopOnIdleEnd=false`) and the Forum first-page polling default is five minutes.

@@ -70,6 +70,7 @@ try {
     $resolvedRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path
     $pyprojectPath = Join-Path $resolvedRoot "pyproject.toml"
     $pythonPath = Join-Path $resolvedRoot ".venv\Scripts\python.exe"
+    $pythonWindowlessPath = Join-Path $resolvedRoot ".venv\Scripts\pythonw.exe"
     $envPath = Join-Path $resolvedRoot ".env"
     $configPath = Join-Path $resolvedRoot "config"
     $logsPath = Join-Path $resolvedRoot "logs"
@@ -79,6 +80,9 @@ try {
     }
     if (-not (Test-Path -LiteralPath $pythonPath -PathType Leaf)) {
         throw ".venv Python bulunamadı: $pythonPath"
+    }
+    if (-not (Test-Path -LiteralPath $pythonWindowlessPath -PathType Leaf)) {
+        throw ".venv pythonw.exe bulunamadı: $pythonWindowlessPath"
     }
     if (-not (Test-Path -LiteralPath $envPath -PathType Leaf)) {
         throw ".env bulunamadı: $envPath"
@@ -107,7 +111,7 @@ try {
 
     $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
     $principal = New-ScheduledTaskPrincipal -UserId $currentUser -LogonType Interactive -RunLevel Limited
-    $action = New-ScheduledTaskAction -Execute $pythonPath -Argument "-m deal_watcher.cli run" -WorkingDirectory $resolvedRoot
+    $action = New-ScheduledTaskAction -Execute $pythonWindowlessPath -Argument "-m deal_watcher.cli run" -WorkingDirectory $resolvedRoot
     $trigger = if ($AtStartup) {
         New-ScheduledTaskTrigger -AtStartup
     } else {
@@ -146,7 +150,7 @@ try {
     Write-Host "Kullanıcı: $currentUser"
     Write-Host "Yetki düzeyi: Limited"
     Write-Host "Çalışma dizini: $resolvedRoot"
-    Write-Host "Program: $pythonPath"
+    Write-Host "Program: $pythonWindowlessPath (windowless)"
     Write-Host "Durum: $($registered.State)"
 } catch {
     Write-Error $_.Exception.Message

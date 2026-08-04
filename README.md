@@ -4,25 +4,26 @@ A lightweight, local-first deal monitoring and Telegram notification tool for pu
 
 Türkçe dokümantasyon: [README.tr.md](README.tr.md)
 
+[![CI](https://github.com/Darkem0/deal-watcher/actions/workflows/ci.yml/badge.svg)](https://github.com/Darkem0/deal-watcher/actions/workflows/ci.yml)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Platform: Windows](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](docs/windows-deployment.md)
 
 ## Project overview
 
-Deal Watcher watches the public Donanım Arşivi “Sıcak Fırsatlar” forum listing, classifies relevant topics, stores local state in SQLite, and delivers deduplicated Telegram notifications. It is local-first: configuration, baseline state, delivery history, and logs stay on the operator’s machine.
+Deal Watcher monitors the public Donanım Arşivi “Sıcak Fırsatlar” forum listing, classifies topics, stores local state in SQLite, and delivers deduplicated Telegram notifications. It is local-first: configuration, baseline state, delivery history, and logs stay on the operator’s machine.
 
 The current alpha focuses on one production source: the public forum listing. Akakçe adapters and offline fixtures remain available for experimental development, but Akakçe is disabled by default and is not live-verified.
 
 ## Current capabilities
 
-- Public forum polling with controlled HTTP timeouts, retry/backoff, jitter, and response checks.
+- Public forum polling with controlled HTTP timeouts, retry/backoff, configured jitter, and response checks.
 - Baseline on the first successful scan; existing topics are not sent as a bulk notification.
-- Topic classification, urgent signals, persistent event keys, and delivery deduplication.
+- Turkish-aware topic classification, urgent signals, persistent event keys, and delivery deduplication.
 - Process-local `runtime_started` and `first_successful_scan` lifecycle notifications, with no periodic heartbeat.
-- Telegram delivery through the shared dispatcher/outbox flow.
+- Telegram delivery through the shared dispatcher/delivery flow.
 - Windows Task Scheduler autostart for the current interactive user.
-- Offline HTML fixtures and deterministic tests.
+- Offline HTML fixtures and deterministic tests on Windows and Ubuntu CI.
 - Akakçe parser code and fixtures retained under an experimental, disabled-by-default policy.
 
 ## How it works
@@ -32,8 +33,8 @@ The current alpha focuses on one production source: the public forum listing. Ak
 3. Emit one process-start event if enabled.
 4. Poll the forum listing through the controlled HTTP client.
 5. Parse and classify topics, then apply baseline and deduplication rules.
-6. Emit the first-success event once after the first successful Forum scan.
-7. Persist notification events before dispatching them to Telegram.
+6. Emit the first-success event once after the first successful forum scan.
+7. Persist notification events before dispatching them to configured channels.
 
 ## Architecture
 
@@ -41,17 +42,17 @@ See [architecture.md](docs/architecture.md) for module boundaries, lifecycle eve
 
 ## Supported source
 
-The active source is Donanım Arşivi Sıcak Fırsatlar. It is a public forum listing and the project uses normal, rate-limited HTTP access. The first page is polled about every five minutes with jitter; the configured second-page interval is retained for future pagination support.
+The active source is Donanım Arşivi Sıcak Fırsatlar. It is a public forum listing and the project uses normal, rate-limited HTTP access. The first page is polled about every five minutes with jitter configured in `config/forum.yaml`. The configured second-page interval is retained for future pagination support; the production adapter currently focuses on the first page.
 
 Akakçe is experimental and disabled by default. Controlled verification of direct automated HTTP access returned HTTP 403. The project does not use CAPTCHA solving, proxy rotation, stealth browsers, fingerprint spoofing, or access-control bypass. For price alerts, use Akakçe’s official “Fiyatı Takip Edin” feature.
 
 ## Notification flow
 
-Forum events are persisted in SQLite, then passed through the existing dispatcher and channel delivery records. Telegram failures are isolated from source execution and redacted before logs or delivery records. A new runtime emits `runtime_started` once and the first successful Forum scan emits `first_successful_scan` once. There is no daily, hourly, or per-scan heartbeat.
+Forum events are persisted in SQLite, then passed through the dispatcher and per-channel delivery records. Telegram failures are isolated from source execution and redacted before logs or delivery records. A new runtime emits `runtime_started` once and the first successful forum scan emits `first_successful_scan` once. There is no daily, hourly, or per-scan heartbeat.
+
+Priority values currently affect message classification and urgency; they do not yet create a separate delayed digest queue. Eligible events are dispatched through the configured channels when they are created.
 
 ## Category classification
-
-The configured category names and their human-readable meanings are:
 
 | Priority | Code | Meaning |
 | --- | --- | --- |
@@ -76,7 +77,7 @@ The configured category names and their human-readable meanings are:
 | Normal | `grocery` | Grocery and household products |
 | Digest/other | `other` | Unclassified or lower-priority topics |
 
-Urgent signals are `fiyat_hatasi`, `son_stok`, `bir_veya_iki_stok`, `sinirli_stok`, `tekrar_stokta`, `guclu_kupon`, `sepette_indirim`, and `olagan_disi_dusuk_fiyat`. Negative rules prevent accessory or cable topics from being misclassified as the target product.
+Urgent signal codes are `fiyat_hatasi`, `son_stok`, `bir_veya_iki_stok`, `sinirli_stok`, `tekrar_stokta`, `guclu_kupon`, `sepette_indirim`, and `olagan_disi_dusuk_fiyat`. The classifier recognizes common Turkish/ASCII spelling variants. Negative rules prevent accessory or cable topics from being misclassified as the target product.
 
 ## Baseline and deduplication
 
@@ -111,10 +112,18 @@ Preview without sending:
 uv run deal-watcher test-notification --dry-run
 ```
 
-The controlled real notification command is opt-in and sends only when explicitly requested:
+The controlled real notification command is opt-in:
 
 ```powershell
 uv run deal-watcher test-notification --send
+```
+
+## Optional Windows toast notifications
+
+Telegram is the default notification channel. To enable Windows toast notifications, install the optional dependency and add `windows_toast` to `notifications.channels` in `config/settings.yaml`:
+
+```powershell
+uv sync --locked --extra notifications
 ```
 
 ## Windows autostart
@@ -124,7 +133,7 @@ The installer first creates a current-user `Interactive`/`Limited` task triggere
 ## Configuration
 
 - `config/forum.yaml` defines the forum URL, polling intervals, categories, and urgent signals.
-- `config/settings.yaml` defines network, storage, notification, rules, and Akakçe settings.
+- `config/settings.yaml` defines network, storage, notifications, rules, and Akakçe settings.
 - `akakce.enabled` is `false` and `status` is `experimental` by default.
 - `notifications.send_runtime_started` and `notifications.send_first_successful_scan` default to `true`.
 
@@ -156,23 +165,25 @@ Tests are offline and deterministic. Live websites, Telegram credentials, and Ta
 
 ## Vibe coding development process
 
-This repository was developed iteratively with human direction and an AI coding agent: plan, implement, test, independently audit, perform explicitly authorized live verification, and prepare a release. The human remains responsible for scope, credentials, live actions, review, and release decisions. See [Building Deal Watcher with Vibe Coding](docs/vibe-coding-guide.md) and the [prompt library](docs/prompt-library.md).
+This repository was developed iteratively with human direction and an AI coding agent: plan, implement, test, independently audit, perform explicitly authorized live verification, and prepare a release. The human remains responsible for scope, credentials, live actions, review, and release decisions.
 
-## Prompt examples
-
-Reusable task templates for source adapters, parser changes, security audits, regression tests, and release work are in [docs/prompt-library.md](docs/prompt-library.md).
+- [Building Deal Watcher with Vibe Coding](docs/vibe-coding-guide.md)
+- [Reusable prompt library](docs/prompt-library.md)
+- [Türkçe Vibe Coding rehberi](docs/vibe-coding-guide.tr.md)
+- [Türkçe prompt kütüphanesi](docs/prompt-library.tr.md)
 
 ## Limitations
 
 - The forum adapter currently focuses on the first listing page.
 - HTML structure can change and should be covered by reviewed fixtures.
+- Priority `digest` is currently a label, not a delayed batching subsystem.
 - Telegram and Windows Task Scheduler require operator setup.
 - This is an alpha release; no production availability guarantee is made.
 - Akakçe live access is not verified and is not part of the default production path.
 
 ## CAPTCHA and anti-bot policy
 
-The project does not solve CAPTCHAs or bypass access controls. It does not add stealth browser behavior, proxy rotation, fingerprint spoofing, cookie theft, or anti-bot evasion. A source that does not permit normal automated access remains disabled or experimental. Read [source access policy](docs/source-access-policy.md).
+The project does not solve CAPTCHAs or bypass access controls. It does not add stealth browser behavior, proxy rotation, fingerprint spoofing, cookie theft, or anti-bot evasion. A source that does not permit normal automated access remains disabled or experimental. Read the [source access policy](docs/source-access-policy.md).
 
 ## Privacy and security
 
@@ -185,8 +196,9 @@ Use only public, permitted sources; respect terms of service, robots policies, r
 ## Roadmap
 
 - Improve forum pagination while preserving baseline and deduplication.
+- Add an explicit digest queue only if users need batched lower-priority notifications.
 - Expand fixture coverage for DOM drift and classification edge cases.
-- Improve operational diagnostics and public release automation.
+- Improve operational diagnostics and release automation.
 - Consider a new source only when normal access, permission, and maintenance boundaries are clear.
 
 ## Contributing

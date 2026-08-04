@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Turkish/ASCII normalization now applies consistently to category exclusions, urgent signals, stock phrases, and state-change signals.
+- Common low-stock phrases such as `1 adet`, `2 adet`, and `sınırlı stok` map correctly to configured urgency codes.
+- The documented polling jitter now matches the current runtime policy.
+- Telegram is the safe default notification channel; Windows toast remains an explicit optional extra.
+
+### Documentation
+
+- Clarified that the observed topic count is not a fixed parser limit.
+- Clarified that `digest` is currently a priority label rather than a delayed batching queue.
+- Added CI visibility, bilingual security/contribution guidance, and a public roadmap.
+
 ## [0.1.0-alpha]
 
 This is an alpha release. It is useful for local experimentation and controlled deployment; no production availability guarantee is made.
