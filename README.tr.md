@@ -45,6 +45,8 @@ Acil sinyaller: `fiyat_hatasi`, `son_stok`, `bir_veya_iki_stok`, `sinirli_stok`,
 
 Mevcut dispatcher/outbox/delivery akışı kullanılır. Yeni bir `deal-watcher run` süreci bir kez `runtime_started`, ilk başarılı Forum taramasından sonra bir kez `first_successful_scan` üretir. Günlük, saatlik veya her taramada heartbeat yoktur. Telegram hataları kaynak taramasını durdurmaz.
 
+Forumun ilk sayfası yaklaşık beş dakikada bir, 10–45 saniye jitter ile taranır. Mevcut event ve delivery kayıtları korunduğu için aynı fırsat tekrar gönderilmez.
+
 `.env.example` dosyasını `.env` olarak kopyalayın ve gerçek değerleri yalnız yerel dosyaya yazın:
 
 ```powershell

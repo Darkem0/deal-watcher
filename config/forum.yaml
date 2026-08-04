@@ -1,6 +1,6 @@
 version: 1
 source: {name: Donanım Arşivi Sıcak Fırsatlar, url: "https://forum.donanimarsivi.com/forumlar/Sicakfirsatlar/"}
-polling: {first_page_minutes: 3, second_page_minutes: 15, jitter_seconds: [10, 45]}
+polling: {first_page_minutes: 5, second_page_minutes: 15, jitter_seconds: [10, 45]}
 baseline_on_first_success: true
 notify_reply_count_only: false
 priorities:

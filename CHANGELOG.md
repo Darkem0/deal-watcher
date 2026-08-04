@@ -17,3 +17,8 @@ This is an alpha release. It is useful for local experimentation and controlled 
 - Vibe coding guide and reusable prompt library.
 
 Akakçe direct automated HTTP access returned HTTP 403 during controlled verification. No CAPTCHA or anti-bot bypass is included.
+
+## Unreleased
+
+- Windows Task Scheduler no longer stops the continuous runtime when the user leaves idle state.
+- Forum first-page polling default is now five minutes; existing event keys and delivery deduplication remain unchanged.

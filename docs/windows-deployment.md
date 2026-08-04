@@ -23,11 +23,11 @@ uv run deal-watcher once --source forum --dry-run
 uv run deal-watcher run
 ```
 
-The first successful scan establishes baseline and does not bulk-send existing topics. The first page is polled about every three minutes with jitter. Akakçe is experimental and disabled by default.
+The first successful scan establishes baseline and does not bulk-send existing topics. The first page is polled about every five minutes with jitter. Akakçe is experimental and disabled by default.
 
 ## Task Scheduler installation
 
-The installer first registers a current-user `Interactive`/`Limited` task with an `AtLogOn` trigger. If Windows denies registration, it performs one controlled UAC self-elevation attempt. `-NoElevation` disables that fallback; `-Force` is required to replace an existing task.
+The installer first registers a current-user `Interactive`/`Limited` task with an `AtLogOn` trigger. Idle termination is explicitly disabled and the continuous task has no execution time limit. If Windows denies registration, it performs one controlled UAC self-elevation attempt. `-NoElevation` disables that fallback; `-Force` is required to replace an existing task.
 
 ```powershell
 pwsh -NoProfile -ExecutionPolicy Bypass -File ".\scripts\install_windows_task.ps1" -ProjectRoot "C:\Projects\deal-watcher"

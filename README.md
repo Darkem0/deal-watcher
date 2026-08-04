@@ -41,7 +41,7 @@ See [architecture.md](docs/architecture.md) for module boundaries, lifecycle eve
 
 ## Supported source
 
-The active source is Donanım Arşivi Sıcak Fırsatlar. It is a public forum listing and the project uses normal, rate-limited HTTP access. The first page is polled about every three minutes with jitter; the configured second-page interval is retained for future pagination support.
+The active source is Donanım Arşivi Sıcak Fırsatlar. It is a public forum listing and the project uses normal, rate-limited HTTP access. The first page is polled about every five minutes with jitter; the configured second-page interval is retained for future pagination support.
 
 Akakçe is experimental and disabled by default. Controlled verification of direct automated HTTP access returned HTTP 403. The project does not use CAPTCHA solving, proxy rotation, stealth browsers, fingerprint spoofing, or access-control bypass. For price alerts, use Akakçe’s official “Fiyatı Takip Edin” feature.
 

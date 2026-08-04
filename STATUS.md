@@ -35,6 +35,7 @@
 - Rotating file/console logging ve secret redaction eklendi.
 - Windows Task Scheduler scripti runtime/config preflight, `-Force`, logon/startup ve güvenli uninstall davranışıyla güncellendi.
 - Akakçe ve HTTP fixture/test paketi eklendi.
+- Windows Task Scheduler görevi kullanıcı idle durumundan çıkınca durmasın diye `StopOnIdleEnd=false` ve limitsiz execution time ile yeniden kaydedildi; Forum ilk sayfa polling aralığı 5 dakikaya çıkarıldı.
 
 ## Doğrulama
 
