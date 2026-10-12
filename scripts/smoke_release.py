@@ -28,8 +28,8 @@ def main() -> int:
                     Path(temporary, member.filename).chmod(stat.S_IMODE(member.external_attr >> 16))
         root = Path(temporary) / "deal-watcher"
         if system == "windows":
-            # /s requires an outer quoted command when the executable path contains spaces.
-            command = ["cmd.exe", "/d", "/s", "/c", f'""{root / "Baslat-Windows.cmd"}" -Check"']
+            # Resolve the visible entrypoint from cwd; the launcher still receives a spaced root.
+            command = ["cmd.exe", "/d", "/c", "Baslat-Windows.cmd", "-Check"]
         else:
             entry = "Baslat-macOS.command" if system == "macos" else "Baslat-Linux.sh"
             command = [str(root / entry), "--check"]
