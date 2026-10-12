@@ -46,7 +46,7 @@ Aşağıdaki tablo 12 Ekim 2026 tarihinde erişilen kaynak kodlarına dayanır; 
 
 **donanim-arsiv:** Belgelenen akış iki forum sayfası, anahtar kelime eşleşmesi, sessiz ilk tarama, tur başına bildirim sınırı ve JSON durumudur. Actions durumunu ayrı `state` dalında tutar; WhatsApp ve isteğe bağlı Telegram kullanır. Sessiz başlangıç veya Türkçe normalizasyon yalnız Deal Watcher'a özgü özellikler değildir. Deal Watcher'ın farkı yerel sürekli süreç, SQLite olay/teslim modeli ve kategori önceliklendirmesidir; ikinci sayfa/RSS desteği şu an daha sınırlıdır. [İncelenen commit](https://github.com/0Alduin0/donanim-arsiv/tree/238bc2c6589527aed071efac8c43836f8a32121b).
 
-Referanslar ve mevcut attribution: [ACKNOWLEDGEMENTS.md](../ACKNOWLEDGEMENTS.md). Diğer depoların kodu bu yayına kopyalanmadı; onların lisanslarının Deal Watcher'ın MIT lisansı olduğu varsayılmaz.
+Referanslar ve mevcut attribution: [ACKNOWLEDGEMENTS.md](acknowledgements.md). Diğer depoların kodu bu yayına kopyalanmadı; onların lisanslarının Deal Watcher'ın MIT lisansı olduğu varsayılmaz.
 
 ## Arkadaşlarınla nasıl paylaşmalısın?
 

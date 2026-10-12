@@ -72,3 +72,7 @@ Donanım Arşivi'ne 2026-08-03 tarihinde kontrollü tek istekle erişim sağland
 ## D23 — Portable sharing without personal runtime state (2026-10-12)
 
 Public main remains the release baseline; Mac production code matches it after newline normalization. Personal .env, SQLite, logs, venv and root LaunchDaemon deployment are excluded. Setup creates .env exclusively and does not overwrite existing credentials. Linux/macOS autostart uses user services and the real CLI runtime; Windows retains pythonw. CI adds macOS but does not imply a live service/Telegram test. Jitter is sourced from validated YAML instead of a duplicated literal. No source adapters are removed or expanded.
+
+## D24 — Beginner launchers and guided setup (2026-10-12)
+
+OS-specific start files share the existing runtime. uv installation is an explicit first-run prompt, never an administrative installation. Guided Telegram setup reads getUpdates after the user's /start step, completes missing local credentials and preserves existing settings. Download ZIPs contain the full project and one appropriate root entrypoint; a GitHub preview link cannot execute an app. User docs distinguish approximate owner CPU observations from measured offline Linux metrics. Root paperwork is moved, not discarded. CI smoke mode only validates configuration and makes no website or Telegram calls.

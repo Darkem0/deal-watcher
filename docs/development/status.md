@@ -2,7 +2,7 @@
 
 ## Current release
 
-- **Release:** `v0.2.0-alpha`
+- **Release candidate:** `v0.3.0-alpha`
 - **Primary source:** Donanım Arşivi Sıcak Fırsatlar, first listing page
 - **Default notification channel:** Telegram
 - **Persistence:** local SQLite
@@ -76,3 +76,15 @@ Akakçe kontrollü doğrulamada HTTP 403 döndürdüğü için deneysel ve varsa
 - Added purpose, implemented features, usage and Telegram integration before installation steps.
 - Documented a Linux-only offline fixture scan plus scheduler idle probe: 44.09 MiB peak RSS, 0.30 CPU seconds over 12.01 seconds. No live network or Telegram messages.
 - Clarified that these are not production averages, hardware minimums or Windows/macOS measurements.
+
+## 2026-10-12 beginner-facing package and README redesign
+
+- Administrative and duplicate root Markdown files moved under docs/development, docs/reports and .github; README, AGENTS and LICENSE remain at root.
+- Three platform ZIPs include the appropriate visible start file, shared bootstrap and guided Telegram setup.
+- Guided setup discovers Chat ID after the user sends /start and fills only missing .env fields; existing settings are preserved.
+- README uses repository SVG graphics, prominent downloads and OS-specific commands. Telegram/permissions guides are separate.
+- Owner reports prior Windows/macOS/Linux use near 1% CPU and stable RAM; documentation labels this as owner observation, distinct from the Linux-only offline measurement.
+- No live monitoring or Telegram delivery has been started on this Linux workstation. Service remains off; packaging work is independent of the erased/disconnected Mac.
+- New ZIP launcher smoke tests run offline on all CI platforms, including a project folder with spaces.
+
+- Local verification: 83 offline tests, Ruff lint/format, package build, Markdown link checks and Linux ZIP launcher smoke test passed. Secret scan found no source credentials in tracked files or the three ZIPs.

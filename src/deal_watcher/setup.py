@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import getpass
 import os
+import tempfile
 from pathlib import Path
 
 import httpx
@@ -45,9 +46,98 @@ def create_env(path: Path, token: str, chat_id: str) -> None:
         stream.write(f"TELEGRAM_BOT_TOKEN={token}\nTELEGRAM_CHAT_ID={chat_id}\n")
 
 
+def complete_env(path: Path, token: str, chat_id: str) -> None:
+    """Fill missing credentials; preserve all configured values and other settings."""
+    if not path.exists():
+        create_env(path, token, chat_id)
+        return
+    if path.is_symlink():
+        raise ValueError(".env bir bağlantı; dosyayı kendiniz düzenleyin")
+    original = path.read_bytes()
+    lines = original.decode("utf-8").splitlines()
+    missing = {"TELEGRAM_BOT_TOKEN": token, "TELEGRAM_CHAT_ID": chat_id}
+    if any(c in token + chat_id for c in "\r\n"):
+        raise ValueError("Değerler tek satır olmalıdır")
+    for index, line in enumerate(lines):
+        if "=" not in line or line.lstrip().startswith("#"):
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        if key in missing:
+            new_value = missing.pop(key)
+            if not value.strip().strip("\"'"):
+                lines[index] = f"{key}={new_value}"
+    lines.extend(f"{key}={value}" for key, value in missing.items())
+    content = "\n".join(lines) + "\n"
+    if content.encode() == original:
+        return
+    # A replaced Unix file retains the temporary file's owner-only permissions.
+    fd, temporary = tempfile.mkstemp(prefix=".env-", dir=path.parent)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            stream.write(content)
+        if path.read_bytes() != original:
+            raise ValueError(".env başka bir süreçte değişti; tekrar deneyin")
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
+
+
+def guided_setup(path: Path) -> bool:
+    _load_environment(None)
+    token = os.getenv("DEAL_WATCHER_TELEGRAM_BOT_TOKEN") or os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("DEAL_WATCHER_TELEGRAM_CHAT_ID") or os.getenv("TELEGRAM_CHAT_ID")
+    if token and chat_id:
+        print("Telegram bağlantı bilgileri hazır; mevcut ayarlar korundu.")
+        return True
+    print("\nİlk kurulum: Telegram'ı telefonunuzda açın.")
+    print("1. https://t.me/BotFather adresinde /newbot ile bot oluşturun.")
+    print("2. Verilen token'ı buraya yapıştırın; yazarken görünmemesi normaldir.")
+    if not token:
+        token = getpass.getpass("Bot token: ").strip()
+    if not token or any(c in token for c in "\r\n"):
+        print("Token boş veya geçersiz; bilgi kaydedilmedi.")
+        return False
+    if not chat_id:
+        chat_id = input("Chat ID biliyorsanız yazın; otomatik bulmak için Enter: ").strip()
+    while not chat_id:
+        print("3. Kendi botunuzun sohbetini açın ve /start mesajı gönderin.")
+        input("Hazırsanız Enter: Telegram'dan sohbet ID'niz okunacak. ")
+        try:
+            chats = find_chats(token)
+        except RuntimeError as exc:
+            print(str(exc))
+            return False
+        choices = list(chats)
+        if not choices:
+            print("Sohbet bulunamadı. Botunuza /start gönderdiğinizden emin olun.")
+            if input("Tekrar denensin mi? [e/H]: ").strip().lower() != "e":
+                return False
+        elif len(choices) == 1:
+            chat_id = choices[0]
+            print(f"Sohbet bulundu ({chats[chat_id]}).")
+        else:
+            for index, value in enumerate(choices, 1):
+                print(f"{index}. {chats[value]} — Chat ID: {value}")
+            selected = input("Bildirimlerin gideceği sohbetin sıra numarası: ").strip()
+            if not selected.isdigit() or not 1 <= int(selected) <= len(choices):
+                print("Seçim geçersiz; tekrar başlatın.")
+                return False
+            chat_id = choices[int(selected) - 1]
+    if not chat_id.lstrip("-").isdigit():
+        print("Chat ID sayısal olmalıdır; kurulum tamamlanmadı.")
+        return False
+    complete_env(path, token, chat_id)
+    os.environ["TELEGRAM_BOT_TOKEN"] = token
+    os.environ["TELEGRAM_CHAT_ID"] = chat_id
+    print("Bağlantı bilgileri bu bilgisayarda .env dosyasına kaydedildi.")
+    return True
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Deal Watcher yerel kurulum yardımcısı")
     parser.add_argument("--check", action="store_true", help="Yalnız offline kontrol yap")
+    parser.add_argument("--guided", action="store_true", help="Adım adım Telegram kurulumu")
     parser.add_argument(
         "--find-chat", action="store_true", help="Telegram getUpdates ile Chat ID bul"
     )
@@ -75,7 +165,10 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print("İstediğiniz ID'yi .env dosyasındaki TELEGRAM_CHAT_ID alanına yazın.")
         return 0
-    if not env.exists() and not args.check:
+    if args.guided:
+        if not guided_setup(env):
+            return 2
+    elif not env.exists() and not args.check:
         print("BotFather'dan aldığınız token yalnız bu bilgisayarda saklanır.")
         token = getpass.getpass("Telegram bot token: ").strip()
         chat_id = input("Chat ID (bilmiyorsanız boş bırakın): ").strip()

@@ -48,7 +48,8 @@ jobs:
           $failed = $false
           foreach ($path in @(
             '.\scripts\install_windows_task.ps1',
-            '.\scripts\uninstall_windows_task.ps1'
+            '.\scripts\uninstall_windows_task.ps1',
+            '.\scripts\start_windows.ps1'
           )) {
             $tokens = $null
             $errors = $null
@@ -63,3 +64,8 @@ jobs:
             }
           }
           if ($failed) { exit 1 }
+
+      - name: Build platform download packages
+        run: uv run python scripts/build_release.py
+      - name: Smoke packaged launcher (offline)
+        run: uv run python scripts/smoke_release.py

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="120" viewBox="0 0 960 120" role="img" aria-label="Forumdan bilgisayarındaki takipçiye, oradan Telegram bildirimine"><rect width="960" height="120" rx="16" fill="#111827"/>
+<g font-family="Arial,sans-serif" text-anchor="middle"><rect x="20" y="22" width="270" height="76" rx="12" fill="#7c2d12"/><text x="155" y="53" fill="#ffedd5" font-size="18" font-weight="700">Donanım Arşivi</text><text x="155" y="77" fill="#fed7aa" font-size="13">Yeni forum fırsatları</text>
+<rect x="345" y="22" width="270" height="76" rx="12" fill="#312e81"/><text x="480" y="53" fill="#e0e7ff" font-size="18" font-weight="700">Bilgisayarın</text><text x="480" y="77" fill="#c7d2fe" font-size="13">Sınıflandırır · kaydeder · tekilleştirir</text>
+<rect x="670" y="22" width="270" height="76" rx="12" fill="#0c4a6e"/><text x="805" y="53" fill="#e0f2fe" font-size="18" font-weight="700">Telegram</text><text x="805" y="77" fill="#bae6fd" font-size="13">Telefonuna ve bilgisayarına bildirim</text></g>
+<g fill="none" stroke="#64748b" stroke-width="3"><path d="M304 60h25m-7-7 7 7-7 7M629 60h25m-7-7 7 7-7 7"/></g></svg>

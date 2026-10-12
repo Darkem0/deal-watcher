@@ -33,7 +33,7 @@ If a Telegram token is exposed, revoke or rotate it with BotFather before contin
 
 ## Responsible source access
 
-Source adapters must follow [`docs/source-access-policy.md`](docs/source-access-policy.md). A 403, CAPTCHA, or anti-bot response is a stop condition, not an invitation to bypass the protection.
+Source adapters must follow [`docs/source-access-policy.md`](../docs/source-access-policy.md). A 403, CAPTCHA, or anti-bot response is a stop condition, not an invitation to bypass the protection.
 
 ---
 

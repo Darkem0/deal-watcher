@@ -1,5 +1,11 @@
 # Deal Watcher: proje, kullanım ve kurulum
 
+## En kolay yol: indir ve başlat
+
+[**Ana sayfadan sistemine uygun ZIP’i indir**](../README.md#-sistemini-seç-indir-ve-aç). ZIP’i tamamen çıkart; Windows’ta `Baslat-Windows.cmd`, macOS’ta `Baslat-macOS.command`, Linux’ta `Baslat-Linux.sh` dosyasını aç. Yardımcı gerekli Python ortamını hazırlar ve yönlendirmeli Telegram bağlantısından sonra takibi başlatır. [Telefondan Telegram kurulum rehberi](telegram-kurulum.md).
+
+Aşağıdaki terminal komutları ve `.env` düzenlemesi alternatif/ayrıntılı yöntemdir; kolay başlatıcıyla normalde bunları elle yapman gerekmez.
+
 ## Ne işe yarar?
 
 Deal Watcher, Donanım Arşivi Sıcak Fırsatlar forumunu kendi bilgisayarında takip edip yeni fırsatları ve uygun konu değişikliklerini Telegram'a gönderen bir Python uygulamasıdır. Forum sayfasını sürekli elle kontrol etmek yerine, bilgisayarın açık ve çevrimiçiyken takip sürecini çalıştırırsın; bildirimler telefonundaki veya bilgisayarındaki Telegram'a gelir.
@@ -17,7 +23,7 @@ Windows, Linux ve macOS'ta aynı çekirdek kullanılır. AIST, Qdrant, GPU, yapa
 - Windows Task Scheduler, Linux kullanıcı systemd servisi ve macOS LaunchAgent desteği.
 - Windows, Ubuntu ve macOS'ta geçen 76 offline test, lint ve paket oluşturma kontrolleri.
 
-Üretim yolunda forumun yalnız ilk liste sayfası izlenir. Varsayılan tarama beş dakika ve ek 10–45 saniye gecikmedir. `digest` bir öncelik etiketidir; gecikmeli toplu bildirim kuyruğu değildir. Akakçe parserları deneysel olarak korunur, canlı takip varsayılan kapalıdır. [Diğer projelerle karşılaştırma](docs/proje-farklari.tr.md).
+Üretim yolunda forumun yalnız ilk liste sayfası izlenir. Varsayılan tarama beş dakika ve ek 10–45 saniye gecikmedir. `digest` bir öncelik etiketidir; gecikmeli toplu bildirim kuyruğu değildir. Akakçe parserları deneysel olarak korunur, canlı takip varsayılan kapalıdır. [Diğer projelerle karşılaştırma](proje-farklari.tr.md).
 
 ## Kullanım ve Telegram entegrasyonu
 
@@ -46,7 +52,7 @@ Bu değerler minimum sistem gereksinimi veya uzun dönem gerçek kullanım ortal
 
 Aşağıdaki akış üç işletim sistemi için aynıdır; ilk kez kullanıyorsan sırayla ilerle.
 
-## 1. uv ve Git
+## 1. Alternatif terminal kurulumu: uv ve Git
 
 [Git](https://git-scm.com/downloads) ve [uv'nin resmî kurulumunu](https://docs.astral.sh/uv/getting-started/installation/) kullan. `uv` Python 3.12'yi ve proje bağımlılıklarını yönetir; Python'u ayrıca elle kurman gerekmez. Kurulumdan sonra terminali yeniden aç.
 

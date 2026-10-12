@@ -130,4 +130,4 @@ Yalnız izin verilen ve normal HTTP erişimine açık kaynakları, makul sıklı
 
 ## Katkı ve lisans
 
-Katkı kuralları için [CONTRIBUTING.md](../CONTRIBUTING.md), güvenlik bildirimi için [SECURITY.md](../SECURITY.md), ilham alınan projeler için [ACKNOWLEDGEMENTS.md](../ACKNOWLEDGEMENTS.md) dosyalarına bakın. Proje [MIT Lisansı](../LICENSE) ile yayımlanır.
+Katkı kuralları için [CONTRIBUTING.md](../.github/CONTRIBUTING.md), güvenlik bildirimi için [SECURITY.md](../.github/SECURITY.md), ilham alınan projeler için [ACKNOWLEDGEMENTS.md](acknowledgements.md) dosyalarına bakın. Proje [MIT Lisansı](../LICENSE) ile yayımlanır.

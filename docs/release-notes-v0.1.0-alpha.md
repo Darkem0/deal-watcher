@@ -20,4 +20,4 @@ Use the official Akakçe “Fiyatı Takip Edin” feature for price alerts. Foll
 
 ## Setup
 
-See [README.md](../README.md), [README.tr.md](../README.tr.md), and the [Windows deployment guide](windows-deployment.md).
+See [README.md](../README.md), [README.tr.md](reference-entry.tr.md), and the [Windows deployment guide](windows-deployment.md).

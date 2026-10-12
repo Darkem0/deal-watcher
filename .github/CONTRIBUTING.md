@@ -34,7 +34,7 @@ Before proposing a source, document:
 - how parser drift will be detected;
 - how the source can be disabled cleanly.
 
-Do not add CAPTCHA solving, proxy rotation, stealth browser behavior, fingerprint spoofing, cookie theft, credential collection, automatic purchases, or access-control bypass. See [`docs/source-access-policy.md`](docs/source-access-policy.md).
+Do not add CAPTCHA solving, proxy rotation, stealth browser behavior, fingerprint spoofing, cookie theft, credential collection, automatic purchases, or access-control bypass. See [`docs/source-access-policy.md`](../docs/source-access-policy.md).
 
 ## Live verification
 

@@ -1,72 +1,155 @@
-# Deal Watcher — Telegram fırsat takipçisi
+<div align="center">
 
+<img src="assets/hero.svg" alt="Deal Watcher: Windows, macOS ve Linux için Telegram fırsat takipçisi" width="960" />
+
+[![Sürüm](https://img.shields.io/badge/sürüm-v0.3.0--alpha-f97316?style=flat-square)](https://github.com/Darkem0/deal-watcher/releases/tag/v0.3.0-alpha)
 [![CI](https://github.com/Darkem0/deal-watcher/actions/workflows/ci.yml/badge.svg)](https://github.com/Darkem0/deal-watcher/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](pyproject.toml)
-[![MIT](https://img.shields.io/badge/Lisans-MIT-green)](LICENSE)
+[![Telegram](https://img.shields.io/badge/bildirim-Telegram-26A5E4?style=flat-square&logo=telegram)](docs/telegram-kurulum.md)
+[![MIT](https://img.shields.io/badge/açık_kaynak-MIT-10b981?style=flat-square)](LICENSE)
 
-Donanım Arşivi Sıcak Fırsatlar forumunu kendi bilgisayarında takip eder; yeni ve uygun değişiklikleri Telegram'a gönderir. **Windows, Linux ve macOS için ortak kurulum**, yerel SQLite kayıtları ve kendi bot token'ın kullanılır. Mac, Qdrant, AIST veya bir yapay zekâ modeli gerekmez.
+**Forumda fırsat aramak yerine, yeni fırsatlar Telegram'ına gelsin.**
 
-[English](README.en.md) · [Adım adım kurulum](KURULUM.md) · [Diğer projelerden farkı](docs/proje-farklari.tr.md)
+Donanım Arşivi Sıcak Fırsatlar'ı bilgisayarında takip eden hafif uygulama.Windows · macOS · Linux — kendi botun, yerel kayıtlar, yaklaşık beş dakikada bir tarama.
 
-## Hızlı başlangıç
+[İndir](#-sistemini-seç-indir-ve-aç) · [Telegram'ı bağla](docs/telegram-kurulum.md) · [İzin / hata yardımı](#-bir-şey-çalışmadı-mı) · [English](docs/README.en.md)
 
-Önce [uv](https://docs.astral.sh/uv/getting-started/installation/) ve Git kur. Üç sistemde de aynı komutları kullan:
+</div>
+
+## 🚀 Sistemini seç, indir ve aç
+
+**Git veya Python'u elle kurman gerekmiyor.** Aşağıdaki ZIP'i indir, tamamen çıkart ve içindeki başlatıcıyı aç. İlk açılışta gerekli `uv` kurulumuna onay verirsin; Python ve bağımlılıkları yardımcı hazırlar. İlk kurulum için internet gerekir.
+
+> [!TIP]
+> **GitHub'da dosyaya tıklamak programı çalıştırmaz.** ZIP'i indirip çıkartmalısın; başlatıcıyı ZIP'in içinden veya tek dosya olarak açma. Diğer dosyalar da aynı klasörde bulunmalı.
+
+<table>
+<tr>
+<td align="center"><a href="https://github.com/Darkem0/deal-watcher/releases/download/v0.3.0-alpha/deal-watcher-windows-v0.3.0-alpha.zip"><img src="assets/download-windows.svg" alt="Windows ZIP indir" width="285" /></a></td>
+<td align="center"><a href="https://github.com/Darkem0/deal-watcher/releases/download/v0.3.0-alpha/deal-watcher-macos-v0.3.0-alpha.zip"><img src="assets/download-macos.svg" alt="macOS ZIP indir" width="285" /></a></td>
+<td align="center"><a href="https://github.com/Darkem0/deal-watcher/releases/download/v0.3.0-alpha/deal-watcher-linux-v0.3.0-alpha.zip"><img src="assets/download-linux.svg" alt="Linux ZIP indir" width="285" /></a></td>
+</tr>
+<tr><td align="center"><b>Baslat-Windows.cmd</b></td><td align="center"><b>Baslat-macOS.command</b></td><td align="center"><b>Baslat-Linux.sh</b></td></tr>
+<tr><td align="center">Sağ tık ZIP → Tümünü ayıkla<br/>Başlatıcıya çift tıkla</td><td align="center">ZIP'e çift tıkla<br/>Başlatıcıyı aç</td><td align="center">ZIP'i çıkart<br/>Program olarak çalıştır*</td></tr>
+<tr><td align="center"><a href="docs/izinler-windows.md">Windows izin / hata rehberi</a></td><td align="center"><a href="docs/izinler-macos.md">macOS izin / hata rehberi</a></td><td align="center"><a href="docs/izinler-linux.md">Linux izin / hata rehberi</a></td></tr>
+</table>
+
+Üç paket aynı uygulamayı içerir; ana klasörde yalnız sistemine uygun başlatıcı bulunur. Paket adları: `deal-watcher-windows-v0.3.0-alpha.zip`, `deal-watcher-macos-v0.3.0-alpha.zip`, `deal-watcher-linux-v0.3.0-alpha.zip`.
+
+\* Linux'ta dosya yöneticisi scripti metin olarak açabilir; bu durumda klasörde terminal açıp `bash Baslat-Linux.sh` yaz. macOS dosya izinleri engellerse `bash Baslat-macOS.command` kullan veya yukarıdaki izin rehberini izle. Windows'ta ZIP'i çıkartıp `.cmd` dosyasını aç; yönetici olarak çalıştırmak normal kurulum için gerekmez.
+
+<details>
+<summary><b>🪟 Windows: terminalden indirip başlat</b></summary>
+
+PowerShell'i açıp aşağıdaki bloğu yapıştır. Yeni klasör `Downloads\DealWatcher-v0.3.0-alpha` altında oluşturulur:
+
+```powershell
+$dw_zip = "$env:USERPROFILE\Downloads\deal-watcher-windows-v0.3.0-alpha.zip"
+$dw_folder = "$env:USERPROFILE\Downloads\DealWatcher-v0.3.0-alpha"
+Invoke-WebRequest "https://github.com/Darkem0/deal-watcher/releases/download/v0.3.0-alpha/deal-watcher-windows-v0.3.0-alpha.zip" -OutFile $dw_zip
+Expand-Archive -LiteralPath $dw_zip -DestinationPath $dw_folder
+& "$dw_folder\deal-watcher\Baslat-Windows.cmd"
+```
+
+Klasör zaten varsa ikinci kopya kurmak yerine mevcut başlatıcıyı aç. [Windows yardımı](docs/izinler-windows.md).
+
+</details>
+
+<details>
+<summary><b>🍎 macOS: terminalden indirip başlat</b></summary>
+
+Terminal'de:
 
 ```sh
-git clone https://github.com/Darkem0/deal-watcher.git
+mkdir -p "$HOME/Downloads/DealWatcher-v0.3.0-alpha"
+cd "$HOME/Downloads/DealWatcher-v0.3.0-alpha"
+curl -fL "https://github.com/Darkem0/deal-watcher/releases/download/v0.3.0-alpha/deal-watcher-macos-v0.3.0-alpha.zip" -o deal-watcher-macos-v0.3.0-alpha.zip
+unzip deal-watcher-macos-v0.3.0-alpha.zip
 cd deal-watcher
-uv sync --locked
-uv run deal-watcher-setup
+bash Baslat-macOS.command
 ```
 
-Telegram'da **@BotFather** üzerinden kendi botunu oluştur ve botuna `/start` gönder. Kurulum yardımcısına token ve Chat ID gir; token ekranda görünmez, yalnız `.env` dosyasına kaydedilir. Chat ID'yi bilmiyorsan boş bırakıp şunu çalıştır:
+Apple Silicon ve Intel'de Python'u `uv` uygun mimariyle kurar. [macOS yardımı](docs/izinler-macos.md).
+
+</details>
+
+<details>
+<summary><b>🐧 Linux: terminalden indirip başlat</b></summary>
+
+Terminal'de:
 
 ```sh
-uv run deal-watcher-setup --find-chat
+mkdir -p "$HOME/Downloads/DealWatcher-v0.3.0-alpha"
+cd "$HOME/Downloads/DealWatcher-v0.3.0-alpha"
+curl -fL "https://github.com/Darkem0/deal-watcher/releases/download/v0.3.0-alpha/deal-watcher-linux-v0.3.0-alpha.zip" -o deal-watcher-linux-v0.3.0-alpha.zip
+unzip deal-watcher-linux-v0.3.0-alpha.zip
+cd deal-watcher
+bash Baslat-Linux.sh
 ```
 
-Bulunan ID'yi `.env` içindeki `TELEGRAM_CHAT_ID=` satırına ekle. Ardından:
+`curl` veya `unzip` bulunamazsa [Linux rehberindeki dağıtım adımlarına](docs/izinler-linux.md) bak. Bu başlatma için systemd gerekmez.
 
-```sh
-uv run deal-watcher-setup --check
-uv run deal-watcher test-notification --send
-uv run deal-watcher run
-```
+</details>
 
-`--check` offline kontroldür. `--send` bir gerçek Telegram test mesajı gönderir. `run` sürekli takip eder; durdurmak için **Ctrl+C**. Terminal kapanırsa veya bilgisayar uyursa takip durur. İstersen [otomatik başlatmayı kur](KURULUM.md#otomatik-başlatma).
+## 💬 Telegram'ını bağla — telefondan başlayabilirsin
 
-## Bildirim mantığı
+1. Telefonda Telegram'dan **[resmî BotFather'ı aç](https://t.me/BotFather)** ve `/newbot` yaz.
+2. Botuna ad ve `bot` ile biten kullanıcı adı ver. BotFather bir token verecek.
+3. Bilgisayardaki başlatıcıya token'ı yapıştır. **Girişte yazı görünmemesi normaldir.**
+4. Chat ID sorulduğunda **Enter** bas; telefonda kendi botunu açıp **`/start`** gönder.
+5. Bilgisayarda tekrar **Enter** bas. Yardımcı sohbeti bulur, ayarı kaydeder ve takibi başlatır.
 
-- İlk başarılı tarama mevcut konuları kaydeder; eski fırsatları topluca göndermez.
-- Sonraki taramalar yeni konular ve seçilmiş durum değişiklikleri için bildirim üretir.
-- SQLite'taki olay ve teslim anahtarları aynı bildirimin tekrarını engeller; yeniden başlatınca kayıtlar korunur.
-- Türkçe/ASCII yazımlar, ürün kategorileri ve acil stok/kupon sinyalleri değerlendirilir. Aksesuarların ana ürün sanılmasını azaltan negatif kurallar vardır.
-- Başlangıç ve ilk başarılı tarama durum mesajı gelebilir; bunlar fırsat bildirimi değildir.
+### ➜ [Telefondan bot oluşturma, token kopyalama ve grup bağlantısını resimli akışla öğren](docs/telegram-kurulum.md)
 
-## Ayarlar ve sınırlar
+İlk kurulumu bir kez yaparsın. Sonraki açılışlarda aynı `Baslat-…` dosyası doğrudan takibi başlatır. Bilgisayarın açık ve çevrimiçi olmalı; bu pencereden başlattıysan pencereyi açık tut. Durdurmak için **Ctrl+C**. Pencere istemiyorsan [otomatik başlatmayı kur](docs/kurulum.md#otomatik-başlatma).
 
-| Dosya | Ne için? |
+> [!NOTE]
+> Botun `/start` mesajına sohbet cevabı vermemesi normaldir; bu bir bildirim botudur. İlk forum taraması mevcut konuları kaydeder, eski fırsatları topluca göndermez. Başlangıç ve ilk başarılı tarama durum mesajı gelebilir; yeni fırsatlar sonraki taramalarda gelir.
+
+## 🔥 Ne işe yarıyor?
+
+<img src="assets/flow.svg" alt="Forum → bilgisayarındaki Deal Watcher → Telegram" width="960" />
+
+| Özellik | Sana faydası |
 | --- | --- |
-| `.env` | Sana ait Telegram token ve Chat ID |
-| `config/forum.yaml` | Forum adresi, tarama aralığı, kategoriler, öncelikler |
-| `config/settings.yaml` | Ağ, veritabanı, log ve bildirim ayarları |
-| `config/products.yaml` | Deneysel Akakçe hedefleri; varsayılan kapalı |
+| Türkçe ürün sınıflandırması | Ekran kartı, işlemci, depolama ve diğer kategorileri ayırır |
+| Stok / kupon sinyalleri | Acil fırsatları önceliklendirir |
+| Aksesuarları ayıran kurallar | Örneğin ekran kartı standını ekran kartı sanmayı azaltır |
+| Kalıcı SQLite kayıtları | Yeniden başlatınca görülen konular ve başarılı teslimler korunur |
+| Olay ve teslim tekilleştirmesi | Aynı olayın başarılı kanal teslimini tekrar etmez |
+| Sessiz ilk tarama | Kurulumda eski konuların mesaj yağmuru olmaz |
 
-Forumun **ilk sayfası** varsayılan olarak beş dakikada bir, ek 10–45 saniye gecikmeyle taranır. İkinci sayfa ayarı dosyada bulunsa da adaptör şu an ikinci sayfayı taramaz. `digest` yalnız öncelik etiketidir; toplu gönderim kuyruğu değildir. Akakçe normal erişimde 403 verdiği için varsayılan kapalıdır. CAPTCHA aşma ve otomatik satın alma yoktur.
+**Bugüne kadar:** forum parserı, Türkçe sınıflandırma, kalıcı kayıtlar, Telegram bildirimleri, kontrollü ağ erişimi ve üç işletim sistemi için çalışma akışı geliştirildi. Bu sürümde indir–aç başlatıcıları, yönlendirmeli Telegram kurulumu ve platforma özel yardım sayfaları eklendi. [Diğer projelerden farkları](docs/proje-farklari.tr.md).
 
-Her arkadaşın kendi token'ını, Chat ID'sini ve veritabanını kullanmalı. Aynı botu bağımsız veritabanlarıyla iki bilgisayarda çalıştırmak çift bildirim üretebilir. Bilgisayar açık ve internete bağlı olmalı; GitHub deposu senin yerine botu çalıştırmaz. Bu sürüm **ön sürümdür**; forum HTML'i değişince parser güncellemesi gerekebilir.
+## 🌿 Günlük kullanımda hafif
 
-## Kaynak tüketimi
+**Üç platformdaki kullanım gözlemim:** Windows, macOS ve Linux'ta CPU tüketimi yaklaşık **%1 civarında**; beş dakikalık taramalar arasında işlemci işi çok az, bellek kullanımı genellikle dengeli. Tarama anında kısa süreli artış olabilir. Bu bir kullanım gözlemidir, her bilgisayar için garanti edilen sınır değildir.
 
-Linux üzerinde kısa bir offline tarama/bekleme testinde tepe RAM **44 MiB**, toplam CPU süresi yaklaşık 12 saniyede **0,30 saniye** ölçüldü. Bu gerçek kullanım ortalaması veya Windows/macOS ölçümü değildir. GPU gerekmez. [Ölçüm yöntemi, disk ve ağ ayrıntıları](KURULUM.md#ne-kadar-kaynak-tüketir).
+| Beklerken | Tarama sırasında | Donanım |
+| --- | --- | --- |
+| Scheduler uyuyarak bekler; CPU çok düşük | Sayfayı okuyup kayıtları işler; kısa süreli CPU artışı | GPU / AI modeli / Qdrant gerekmez |
 
-## Geliştirme ve katkı
+Linux'taki kısa **offline testte** tepe RAM **44 MiB** ölçüldü. Bu Windows/macOS ölçümü veya uzun dönem canlı kullanım ortalaması değildir. Normal çalışma bağımlılıkları yaklaşık 32 MiB'dı; Python ve indirme önbelleği ayrıca yer kaplar. [Ölçüm yöntemi ve disk/ağ ayrıntıları](docs/kurulum.md#ne-kadar-kaynak-tüketir).
 
-```sh
-uv sync --locked --extra dev
-uv run pytest
-uv run ruff check .
-uv run ruff format --check .
-```
+## 🧭 Bir şey çalışmadı mı?
 
-Testler kayıtlı/sentetik HTML ile çalışır; CI'da canlı site veya Telegram'a mesaj gönderilmez. [Mimari](docs/architecture.md), [katkı](CONTRIBUTING.md), [güvenlik](SECURITY.md), [kaynak erişim politikası](docs/source-access-policy.tr.md) ve [referans projeler](ACKNOWLEDGEMENTS.md). [MIT lisansı](LICENSE).
+| Durum | Rehber |
+| --- | --- |
+| Windows engeli, PowerShell, açılıp kapanan pencere | [🪟 Windows izinleri ve çözümleri](docs/izinler-windows.md) |
+| macOS geliştirici / çalıştırma izni / Terminal sorunu | [🍎 macOS izinleri ve çözümleri](docs/izinler-macos.md) |
+| Linux'ta metin olarak açılma, curl/unzip, systemd | [🐧 Linux izinleri ve çözümleri](docs/izinler-linux.md) |
+| Token, Chat ID, mesaj gelmemesi veya grup bağlantısı | [💬 Telegram rehberi](docs/telegram-kurulum.md) |
+| Arka planda çalıştırma, güncelleme, kaldırma | [⚙️ Ayrıntılı kurulum ve kullanım](docs/kurulum.md) |
+
+<details>
+<summary><b>Bilinen sınırlar, gizlilik ve geliştirici belgeleri</b></summary>
+
+- Forumun şu an yalnız ilk liste sayfası izlenir; varsayılan aralık beş dakika + 10–45 saniye jitter'dır.
+- `digest` öncelik etiketidir; toplu gönderim kuyruğu değildir.
+- Akakçe deneysel ve varsayılan kapalıdır; CAPTCHA aşma veya otomatik satın alma yoktur.
+- Her kullanıcı kendi botunu kullanır. Aynı token ile ayrı veritabanları çift bildirim oluşturabilir.
+- `.env`, SQLite ve loglar kişiseldir; paylaşma. Bildirim metinleri Telegram'a gönderilir, kayıtlar yerelde tutulur.
+- Ön sürüm: forum HTML'i değişince güncelleme gerekebilir. CI offline testleri doğrular; gerçek teslim ve servis açılışı yerel kontrol ister.
+
+[Geliştirici başlangıcı](docs/development/README.md) · [Mimari](docs/architecture.md) · [Katkı](.github/CONTRIBUTING.md) · [Güvenlik](.github/SECURITY.md) · [Referanslar](docs/acknowledgements.md) · [MIT lisansı](LICENSE)
+
+</details>

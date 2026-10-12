@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.0-alpha] — 2026-10-12
+
+- Beginner-oriented README with SVG cover, download buttons and platform-specific launch instructions.
+- Three platform ZIPs and visible .cmd/.command/.sh launchers; uv/Python bootstrap with user consent.
+- Guided Telegram setup with automatic Chat ID discovery and missing-credential completion.
+- Separate phone Telegram setup and OS permission/troubleshooting guides.
+- Root administrative Markdown documents moved into documentation folders.
+- Offline packaged-launcher smoke checks added for all three CI systems.
+
+
 ## [0.2.0-alpha] — 2026-10-12
 
 - Shared interactive setup for Windows, Linux and macOS; hidden token input and optional Chat ID discovery.

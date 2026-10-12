@@ -1,6 +1,6 @@
 # Deal Watcher
 
-Local Donanım Arşivi deal monitoring with Telegram notifications. Windows, Linux and macOS use the same Python 3.12 runtime. [Türkçe](README.md).
+Local Donanım Arşivi deal monitoring with Telegram notifications. Windows, Linux and macOS use the same Python 3.12 runtime. [Türkçe](../README.md).
 
 ## Quick start
 
@@ -35,7 +35,7 @@ The test command sends one real Telegram message. `run` monitors until Ctrl+C; t
 - No cloud account or AI model is needed to run locally; GitHub Actions only runs offline CI.
 - This is a pre-release. Forum HTML changes can break parsing. One active host per bot avoids duplicate alerts from independent databases.
 
-See [cross-platform setup](KURULUM.md), [architecture](docs/architecture.md), [comparison with reference projects](docs/proje-farklari.tr.md), [access policy](docs/source-access-policy.md), [security](SECURITY.md) and [MIT license](LICENSE).
+See [cross-platform setup](kurulum.md), [architecture](architecture.md), [comparison with reference projects](proje-farklari.tr.md), [access policy](source-access-policy.md), [security](../.github/SECURITY.md) and [MIT license](../LICENSE).
 
 ## Development
 
