@@ -131,7 +131,7 @@ class ForumConfig(StrictModel):
 
 class ApplicationConfig(StrictModel):
     timezone: str = Field(min_length=1)
-    platform: Literal["windows", "macos", "auto"]
+    platform: Literal["windows", "linux", "macos", "auto"]
 
 
 class NetworkConfig(StrictModel):

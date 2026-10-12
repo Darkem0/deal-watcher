@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "deal-watcher"
-version = "0.1.0"
+version = "0.2.0"
 description = "Local-first forum deal monitoring and Telegram notification tool"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -22,6 +22,8 @@ classifiers = [
   "Environment :: Console",
   "License :: OSI Approved :: MIT License",
   "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: MacOS",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.12",
   "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
@@ -44,6 +46,7 @@ Repository = "https://github.com/Darkem0/deal-watcher.git"
 
 [project.scripts]
 deal-watcher = "deal_watcher.cli:main"
+deal-watcher-setup = "deal_watcher.setup:main"
 
 [project.optional-dependencies]
 experimental = ["playwright>=1.45"]

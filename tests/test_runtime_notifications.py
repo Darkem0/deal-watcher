@@ -206,3 +206,18 @@ def test_lifecycle_notifications_can_be_disabled_without_heartbeat_fields(
     assert dispatched == []
     assert not hasattr(config.settings.notifications, "daily_heartbeat")
     assert not hasattr(config.settings.notifications, "hourly_heartbeat")
+
+
+def test_runtime_uses_configured_jitter(tmp_path, monkeypatch) -> None:
+    config = _config(tmp_path)
+    config.forum.polling.jitter_seconds = (12, 23)
+    monkeypatch.setattr(cli, "load_config", lambda _directory: config)
+    monkeypatch.setattr(cli, "_load_environment", lambda _env_file: None)
+    captured = []
+
+    def capture_jobs(_path, jobs, **kwargs):
+        captured.extend(jobs)
+
+    monkeypatch.setattr(scheduler, "run_with_lock", capture_jobs)
+    assert cli.main(["run", "--max-iterations", "1"]) == 0
+    assert captured[0].jitter_seconds == (12, 23)

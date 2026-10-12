@@ -2,7 +2,7 @@
 
 ## Current release
 
-- **Release:** `v0.1.0-alpha`
+- **Release candidate:** `v0.2.0-alpha`
 - **Primary source:** Donanım Arşivi Sıcak Fırsatlar, first listing page
 - **Default notification channel:** Telegram
 - **Persistence:** local SQLite
@@ -58,3 +58,13 @@ Deal Watcher’ın aktif üretim kaynağı Donanım Arşivi Sıcak Fırsatlar’
 Akakçe kontrollü doğrulamada HTTP 403 döndürdüğü için deneysel ve varsayılan kapalıdır. CAPTCHA veya erişim kontrolü aşma uygulanmaz. Bilinen ana sınırlamalar ilk sayfaya odaklanma, forum HTML drift riski ve `digest` için ayrı bir toplu kuyruk bulunmamasıdır.
 
 - Windows Task Scheduler idle termination is disabled (`StopOnIdleEnd=false`) and the Forum first-page polling default is five minutes.
+
+## 2026-10-12 portable release preparation
+
+- Production Mac source was compared with public main 831a006; application code matches after newline normalization.
+- Personal runtime state and credentials are excluded. Existing Windows windowless startup is preserved.
+- Shared setup, Linux user service and repaired macOS launchd entry point are implemented.
+- Forum jitter is taken from YAML. Core baseline, storage and notification behavior are preserved.
+- Ubuntu local offline tests: 76 passed; Ruff and package build passed. CI now includes macOS alongside Ubuntu and Windows.
+- No real Telegram message or live forum access was performed for this release preparation.
+- Native autostart/live Telegram verification remains a per-user deployment check, separate from offline CI.

@@ -27,7 +27,7 @@ def test_test_notification_send_uses_dispatcher_and_masks_chat_id(
     monkeypatch.setattr(cli, "_load_environment", lambda _path: None)
     monkeypatch.setenv("DEAL_WATCHER_DATABASE_PATH", str(tmp_path / "send.sqlite3"))
     monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "test-token-never-print")
-    monkeypatch.setenv("TELEGRAM_CHAT_ID", "6647685134")
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "9000001234")
 
     def fake_send(self, event) -> None:
         calls.append(event)
@@ -41,7 +41,7 @@ def test_test_notification_send_uses_dispatcher_and_masks_chat_id(
     assert result == 0
     assert len(calls) == 1
     assert "Telegram test bildirimi gönderildi." in output.out
-    assert "Chat: ******5134" in output.out
+    assert "Chat: ******1234" in output.out
     assert "Message ID: 42" in output.out
     assert "Delivery: delivered" in output.out
     assert "test-token-never-print" not in output.out

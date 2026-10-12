@@ -692,7 +692,7 @@ def main(argv: list[str] | None = None) -> int:
                 "forum",
                 config.forum.polling.first_page_minutes * 60,
                 dispatch_forum,
-                45,
+                config.forum.polling.jitter_seconds,
             ),
         ]
         if config.settings.akakce.enabled:

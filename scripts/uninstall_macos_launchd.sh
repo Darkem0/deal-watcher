@@ -1,8 +1,5 @@
 #!/bin/sh
 set -eu
-
-target="$HOME/Library/LaunchAgents/com.dealwatcher.agent.plist"
-if [ -f "$target" ]; then
-  launchctl bootout "gui/$(id -u)" "$target" 2>/dev/null || true
-  rm -f "$target"
-fi
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+project_root=${1:-$(dirname -- "$script_dir")}
+exec "$project_root/.venv/bin/python" "$script_dir/manage_service.py" uninstall --platform macos --project-root "$project_root"

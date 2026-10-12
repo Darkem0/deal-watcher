@@ -68,3 +68,7 @@ Başlık, prefix ve ilk mesaj birlikte sınıflandırılır; hazır sistem, akse
 
 ## D15 — Gerçek DOM şekli fixture'ı kişisel/dinamik veri içermez
 Donanım Arşivi'ne 2026-08-03 tarihinde kontrollü tek istekle erişim sağlandı. Dinamik CSRF, avatar, cookie ve kullanıcı üretimli tam sayfa saklanmadı; yalnız redakte edilmiş XenForo liste DOM şekli fixture'a dönüştürüldü. Bu fixture gerçek-şekil kontrolüdür, tam canlı doğrulama iddiası değildir.
+
+## D23 — Portable sharing without personal runtime state (2026-10-12)
+
+Public main remains the release baseline; Mac production code matches it after newline normalization. Personal .env, SQLite, logs, venv and root LaunchDaemon deployment are excluded. Setup creates .env exclusively and does not overwrite existing credentials. Linux/macOS autostart uses user services and the real CLI runtime; Windows retains pythonw. CI adds macOS but does not imply a live service/Telegram test. Jitter is sourced from validated YAML instead of a duplicated literal. No source adapters are removed or expanded.

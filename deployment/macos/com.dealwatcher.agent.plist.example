@@ -6,7 +6,7 @@
   <key>ProgramArguments</key>
   <array>
     <string>__PROJECT_ROOT__/.venv/bin/python</string>
-    <string>-m</string><string>deal_watcher.scheduler</string>
+    <string>-m</string><string>deal_watcher.cli</string><string>run</string>
   </array>
   <key>WorkingDirectory</key><string>__PROJECT_ROOT__</string>
   <key>RunAtLoad</key><true/>
