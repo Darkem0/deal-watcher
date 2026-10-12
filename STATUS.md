@@ -70,3 +70,9 @@ Akakçe kontrollü doğrulamada HTTP 403 döndürdüğü için deneysel ve varsa
 - Published source contains no production token, Chat ID, SQLite or logs. A matching legacy test Chat ID was replaced; existing public Git history was retained.
 - No real Telegram message or live forum access was performed for this release preparation.
 - Native autostart/live Telegram verification remains a per-user deployment check, separate from offline CI.
+
+## 2026-10-12 project introduction and resource documentation
+
+- Added purpose, implemented features, usage and Telegram integration before installation steps.
+- Documented a Linux-only offline fixture scan plus scheduler idle probe: 44.09 MiB peak RSS, 0.30 CPU seconds over 12.01 seconds. No live network or Telegram messages.
+- Clarified that these are not production averages, hardware minimums or Windows/macOS measurements.

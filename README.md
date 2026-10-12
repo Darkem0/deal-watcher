@@ -56,6 +56,10 @@ Forumun **ilk sayfası** varsayılan olarak beş dakikada bir, ek 10–45 saniye
 
 Her arkadaşın kendi token'ını, Chat ID'sini ve veritabanını kullanmalı. Aynı botu bağımsız veritabanlarıyla iki bilgisayarda çalıştırmak çift bildirim üretebilir. Bilgisayar açık ve internete bağlı olmalı; GitHub deposu senin yerine botu çalıştırmaz. Bu sürüm **ön sürümdür**; forum HTML'i değişince parser güncellemesi gerekebilir.
 
+## Kaynak tüketimi
+
+Linux üzerinde kısa bir offline tarama/bekleme testinde tepe RAM **44 MiB**, toplam CPU süresi yaklaşık 12 saniyede **0,30 saniye** ölçüldü. Bu gerçek kullanım ortalaması veya Windows/macOS ölçümü değildir. GPU gerekmez. [Ölçüm yöntemi, disk ve ağ ayrıntıları](KURULUM.md#ne-kadar-kaynak-tüketir).
+
 ## Geliştirme ve katkı
 
 ```sh

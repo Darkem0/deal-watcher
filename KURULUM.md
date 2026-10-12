@@ -1,4 +1,50 @@
-# Windows, Linux ve macOS kurulumu
+# Deal Watcher: proje, kullanım ve kurulum
+
+## Ne işe yarar?
+
+Deal Watcher, Donanım Arşivi Sıcak Fırsatlar forumunu kendi bilgisayarında takip edip yeni fırsatları ve uygun konu değişikliklerini Telegram'a gönderen bir Python uygulamasıdır. Forum sayfasını sürekli elle kontrol etmek yerine, bilgisayarın açık ve çevrimiçiyken takip sürecini çalıştırırsın; bildirimler telefonundaki veya bilgisayarındaki Telegram'a gelir.
+
+Windows, Linux ve macOS'ta aynı çekirdek kullanılır. AIST, Qdrant, GPU, yapay zekâ modeli veya ayrı bir sunucu gerekmez. Bu bir sohbet asistanı değildir; takip bilgisayardaki uygulamadan başlatılır, Telegram bildirim kanalıdır.
+
+## Şu ana kadar neler geliştirildi?
+
+- Forum konularını okuyan parser ve Türkçe/ASCII yazımları değerlendiren ürün sınıflandırması.
+- Stok, kupon ve indirim sinyalleri için öncelikler; aksesuarları asıl üründen ayırmaya yardımcı negatif kurallar.
+- İlk başarılı taramada mevcut konuları sessizce kaydetme; sonraki yeni/uygun olayları bildirme.
+- SQLite'ta konu, olay ve bildirim teslim kayıtları; yeniden başlatmalarda korunabilen tekilleştirme.
+- Ağ zaman aşımı, sınırlı tekrar deneme, hata sonrası geri çekilme ve ayarlanabilir tarama gecikmesi.
+- Telegram gönderimi, gizli token girişi ve Chat ID bulmaya yardımcı kurulum komutu.
+- Windows Task Scheduler, Linux kullanıcı systemd servisi ve macOS LaunchAgent desteği.
+- Windows, Ubuntu ve macOS'ta geçen 76 offline test, lint ve paket oluşturma kontrolleri.
+
+Üretim yolunda forumun yalnız ilk liste sayfası izlenir. Varsayılan tarama beş dakika ve ek 10–45 saniye gecikmedir. `digest` bir öncelik etiketidir; gecikmeli toplu bildirim kuyruğu değildir. Akakçe parserları deneysel olarak korunur, canlı takip varsayılan kapalıdır. [Diğer projelerle karşılaştırma](docs/proje-farklari.tr.md).
+
+## Kullanım ve Telegram entegrasyonu
+
+Her kullanıcı kendi BotFather botunu, token'ını ve Chat ID'sini kullanır. Token yerel `.env` dosyasında kalır; forum ayarları `config/forum.yaml`, ağ/bildirim/depolama ayarları `config/settings.yaml` içindedir. Varsayılan kanal Telegram'dır. Mevcut bir botun token'ını da kullanabilirsin; Chat ID bulurken aynı token ile çalışan webhook veya başka getUpdates istemcisi olmamalıdır.
+
+Kurulumdan sonra `uv run deal-watcher run` ile takip başlar, Ctrl+C ile durur. İlk taramada eski konuların topluca gelmemesi normaldir. Başlangıç ve ilk başarılı tarama durum mesajları gelebilir. Otomatik başlatma terminali açık tutma ihtiyacını kaldırır; bilgisayarın kapanması, uyuması veya internetinin kesilmesi yine takibi durdurur.
+
+Bağımsız veritabanlarıyla aynı botu iki bilgisayarda çalıştırmak çift bildirim üretebilir. Token, `.env`, SQLite ve log dosyalarını paylaşma; diğer kullanıcılara depo/sürüm bağlantısını gönder. Gerçek Telegram teslimini ve otomatik servis açılışını kendi bilgisayarında kontrol et; offline CI bunların canlı doğrulaması değildir.
+
+## Ne kadar kaynak tüketir?
+
+12 Ekim 2026'da Linux/Python 3.12 üzerinde yalnız çalışma bağımlılıklarıyla bir ölçüm yapıldı: sentetik HTML ile bir forum taraması, ardından scheduler beklemesi; yaklaşık 12 saniye sonra düzgün kapatma. Canlı forum isteği veya Telegram gönderimi yapılmadı.
+
+| Kaynak | Ölçüm / davranış |
+| --- | --- |
+| RAM | Bu kısa testte tepe resident bellek **44,09 MiB** |
+| CPU | Yaklaşık **12,01 saniyede toplam 0,30 saniye CPU süresi**; başlangıç ve örnek tarama dahil |
+| Bağımlılıklar | Geliştirme araçları hariç Python ortamı yaklaşık **32 MiB**; Python yorumlayıcısı ve uv indirme önbelleği buna dahil değil |
+| Veritabanı | Küçük test veritabanı **144 KiB**; gerçek kayıt sayısıyla büyür |
+| Loglar | Ana uygulama logu 5 MB ve üç yedekle yaklaşık 20 MB'a kadar döndürülür; macOS stdout/stderr logları bu sınıra dahil değildir |
+| Ağ | Varsayılan aralıkta saatte yaklaşık 12 veya daha az liste taraması; konu detayları ve bildirimler ek istekler oluşturabilir |
+
+Bu değerler minimum sistem gereksinimi veya uzun dönem gerçek kullanım ortalaması değildir. Canlı sayfa büyüklüğü, kayıt sayısı, hata tekrarları ve işletim sistemi tüketimi değiştirebilir. Windows/macOS için ayrı kaynak ölçümü yapılmadı. GPU kullanılmaz; taramalar arasındaki scheduler döngüsü bekleyerek çalışır. Sabit bir MB/saat ağ tüketimi ölçülmedi.
+
+## Adım adım kurulum
+
+Aşağıdaki akış üç işletim sistemi için aynıdır; ilk kez kullanıyorsan sırayla ilerle.
 
 ## 1. uv ve Git
 
