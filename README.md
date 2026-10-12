@@ -9,7 +9,8 @@
 
 **Forumda fırsat aramak yerine, yeni fırsatlar Telegram'ına gelsin.**
 
-Donanım Arşivi Sıcak Fırsatlar'ı bilgisayarında takip eden hafif uygulama.Windows · macOS · Linux — kendi botun, yerel kayıtlar, yaklaşık beş dakikada bir tarama.
+Donanım Arşivi Sıcak Fırsatlar'ı bilgisayarında takip eden hafif uygulama.<br/>
+Windows · macOS · Linux — kendi botun, yerel kayıtlar, yaklaşık beş dakikada bir tarama.
 
 [İndir](#-sistemini-seç-indir-ve-aç) · [Telegram'ı bağla](docs/telegram-kurulum.md) · [İzin / hata yardımı](#-bir-şey-çalışmadı-mı) · [English](docs/README.en.md)
 
@@ -98,7 +99,7 @@ bash Baslat-Linux.sh
 4. Chat ID sorulduğunda **Enter** bas; telefonda kendi botunu açıp **`/start`** gönder.
 5. Bilgisayarda tekrar **Enter** bas. Yardımcı sohbeti bulur, ayarı kaydeder ve takibi başlatır.
 
-### ➜ [Telefondan bot oluşturma, token kopyalama ve grup bağlantısını resimli akışla öğren](docs/telegram-kurulum.md)
+### ➜ [Adım adım Telegram kurulumu: telefondan başlayarak](docs/telegram-kurulum.md)
 
 İlk kurulumu bir kez yaparsın. Sonraki açılışlarda aynı `Baslat-…` dosyası doğrudan takibi başlatır. Bilgisayarın açık ve çevrimiçi olmalı; bu pencereden başlattıysan pencereyi açık tut. Durdurmak için **Ctrl+C**. Pencere istemiyorsan [otomatik başlatmayı kur](docs/kurulum.md#otomatik-başlatma).
 
