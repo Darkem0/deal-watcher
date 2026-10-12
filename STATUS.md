@@ -2,7 +2,7 @@
 
 ## Current release
 
-- **Release candidate:** `v0.2.0-alpha`
+- **Release:** `v0.2.0-alpha`
 - **Primary source:** Donanım Arşivi Sıcak Fırsatlar, first listing page
 - **Default notification channel:** Telegram
 - **Persistence:** local SQLite
@@ -20,7 +20,7 @@
 - Telegram errors are isolated from source execution and redacted before persistence.
 - Forum polling uses the configured five-minute interval plus 10–45 second jitter.
 - Windows autostart uses an `Interactive`/`Limited` current-user task and a controlled UAC fallback.
-- CI runs deterministic offline tests and Ruff checks on Windows and Ubuntu.
+- CI runs deterministic offline tests and Ruff checks on Windows, Ubuntu and macOS.
 
 ## Source access decision
 
@@ -65,6 +65,8 @@ Akakçe kontrollü doğrulamada HTTP 403 döndürdüğü için deneysel ve varsa
 - Personal runtime state and credentials are excluded. Existing Windows windowless startup is preserved.
 - Shared setup, Linux user service and repaired macOS launchd entry point are implemented.
 - Forum jitter is taken from YAML. Core baseline, storage and notification behavior are preserved.
-- Ubuntu local offline tests: 76 passed; Ruff and package build passed. CI now includes macOS alongside Ubuntu and Windows.
+- Ubuntu local offline tests: 76 passed; Ruff and package build passed.
+- GitHub CI passed on macOS, Ubuntu and Windows for code commit 557f2ed: https://github.com/Darkem0/deal-watcher/actions/runs/38235657335.
+- Published source contains no production token, Chat ID, SQLite or logs. A matching legacy test Chat ID was replaced; existing public Git history was retained.
 - No real Telegram message or live forum access was performed for this release preparation.
 - Native autostart/live Telegram verification remains a per-user deployment check, separate from offline CI.
