@@ -55,7 +55,7 @@ Bilgisayardaki terminale dön ve Enter bas. Yardımcı Telegram'dan sohbeti okur
 
 ```mermaid
 flowchart LR
-    A[Telefonda kendi botunu aç] --> B[/start gönder]
+    A[Telefonda kendi botunu aç] --> B["/start gönder"]
     B --> C[Bilgisayarda Enter bas]
     C --> D[Sohbet bulundu]
     D --> E[Takip başlar]

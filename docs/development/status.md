@@ -2,7 +2,7 @@
 
 ## Current release
 
-- **Release candidate:** `v0.3.0-alpha`
+- **Release:** `v0.3.0-alpha`
 - **Primary source:** Donanım Arşivi Sıcak Fırsatlar, first listing page
 - **Default notification channel:** Telegram
 - **Persistence:** local SQLite
@@ -88,3 +88,5 @@ Akakçe kontrollü doğrulamada HTTP 403 döndürdüğü için deneysel ve varsa
 - New ZIP launcher smoke tests run offline on all CI platforms, including a project folder with spaces.
 
 - Local verification: 83 offline tests, Ruff lint/format, package build, Markdown link checks and Linux ZIP launcher smoke test passed. Secret scan found no source credentials in tracked files or the three ZIPs.
+
+- Cross-platform CI and packaged-launcher smoke passed on Windows, Ubuntu and macOS at code commit 69d1bb6: https://github.com/Darkem0/deal-watcher/actions/runs/38239750840. The preceding smoke-test cmd quoting failure was fixed; no runtime code failure remained.
